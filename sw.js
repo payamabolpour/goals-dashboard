@@ -1,4 +1,4 @@
-const CACHE_NAME = 'goals-dashboard-v2';
+const CACHE_NAME = 'goals-dashboard-v3';
 const ASSETS = [
   './index.html',
   './manifest.json',

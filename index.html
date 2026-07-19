@@ -14,17 +14,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#12151a;
-    --surface:#1e232b;
-    --surface-2:#242a33;
-    --line:#2c333d;
-    --gold:#c9a227;
-    --gold-bright:#e8c65a;
+    --bg:#0a0e14;
+    --surface:#111823;
+    --surface-2:#16202c;
+    --line:#233040;
+    --gold:#22d3ee;
+    --gold-bright:#67e8f9;
     --silver:#9ca3af;
-    --text:#e8e6e1;
-    --text-muted:#8b909a;
-    --good:#4ade80;
-    --bad:#f87171;
+    --text:#e6edf3;
+    --text-muted:#7c8ba1;
+    --good:#34d399;
+    --bad:#fb7185;
     --warn:#f59e0b;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -32,7 +32,8 @@
   body{
     margin:0;
     background:
-      radial-gradient(1200px 600px at 80% -10%, #1b2129 0%, transparent 60%),
+      radial-gradient(1200px 600px at 80% -10%, #10202a 0%, transparent 60%),
+      radial-gradient(900px 500px at 5% 110%, #0d1a22 0%, transparent 55%),
       var(--bg);
     color:var(--text);
     font-family:'Vazirmatn',sans-serif;
@@ -69,7 +70,8 @@
   .sync-status{font-size:10.5px;color:var(--text-muted);display:flex;align-items:center;gap:5px;}
   .dot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);}
   .dot.on{background:var(--good);}
-  #chartWrap{width:100%;height:64px;margin-top:6px;}
+  #chartWrap{width:100%;height:120px;margin-top:10px;}
+  .chart-axis{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
 
   .grid{
     max-width:1100px;margin:0 auto;
@@ -207,6 +209,7 @@
     <div class="sync-status"><span class="dot" id="syncDot"></span><span id="syncText">همگام‌سازی غیرفعال</span></div>
   </div>
   <div id="chartWrap"></div>
+  <div class="chart-axis" id="chartAxis"></div>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -368,26 +371,51 @@ function render(){
   renderSyncStatus();
 }
 
+function fmtAxisDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+}
+
 function renderChart(){
   const wrap = document.getElementById('chartWrap');
-  if(history.length<2){ wrap.innerHTML = '<div style="font-size:11px;color:var(--text-muted);padding-top:18px;">با چند بار به‌روزرسانی، نمودار روند اینجا شکل می‌گیره</div>'; return; }
-  const w = wrap.clientWidth || 600, h = 64, pad=4;
+  const axis = document.getElementById('chartAxis');
+  if(history.length<2){
+    wrap.innerHTML = '<div style="font-size:11px;color:var(--text-muted);padding-top:44px;text-align:center;">با چند بار به‌روزرسانی، نمودار روند اینجا شکل می‌گیره</div>';
+    axis.innerHTML = '';
+    return;
+  }
+  const w = wrap.clientWidth || 600, h = 120, padX=6, padY=10;
   const pts = history.slice(-30);
-  const stepX = (w-pad*2)/(pts.length-1);
+  const stepX = pts.length>1 ? (w-padX*2)/(pts.length-1) : 0;
+  const yOf = function(pct){ return h - padY - (pct/100)*(h-padY*2); };
   const path = pts.map(function(pnt,i){
-    const x = pad + i*stepX;
-    const y = h - pad - (pnt.avgPct/100)*(h-pad*2);
+    const x = padX + i*stepX;
+    const y = yOf(pnt.avgPct);
     return (i===0?'M':'L')+x.toFixed(1)+','+y.toFixed(1);
   }).join(' ');
-  const areaPath = path + ' L'+(pad+(pts.length-1)*stepX).toFixed(1)+','+h+' L'+pad+','+h+' Z';
+  const areaPath = path + ' L'+(padX+(pts.length-1)*stepX).toFixed(1)+','+h+' L'+padX+','+h+' Z';
+
+  const grid = [0,25,50,75,100].map(function(g){
+    const y = yOf(g).toFixed(1);
+    return '<line x1="'+padX+'" y1="'+y+'" x2="'+(w-padX)+'" y2="'+y+'" stroke="#233040" stroke-width="1" stroke-dasharray="3,4"/>' +
+           '<text x="2" y="'+(Number(y)-2)+'" font-size="8" fill="#7c8ba1" font-family="JetBrains Mono, monospace">'+g+'%</text>';
+  }).join('');
+
+  const lastX = padX+(pts.length-1)*stepX, lastY = yOf(pts[pts.length-1].avgPct);
+  const dot = '<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="3.5" fill="#67e8f9"/><circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="7" fill="#67e8f9" opacity="0.25"/>';
+
   wrap.innerHTML =
     '<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" preserveAspectRatio="none">' +
     '<defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0%" stop-color="#c9a227" stop-opacity="0.35"/>' +
-    '<stop offset="100%" stop-color="#c9a227" stop-opacity="0"/></linearGradient></defs>' +
+    '<stop offset="0%" stop-color="#22d3ee" stop-opacity="0.30"/>' +
+    '<stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>' +
+    grid +
     '<path d="'+areaPath+'" fill="url(#areaGrad)"/>' +
-    '<path d="'+path+'" fill="none" stroke="#e8c65a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+    '<path d="'+path+'" fill="none" stroke="#67e8f9" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>' +
+    dot +
     '</svg>';
+
+  axis.innerHTML = '<span>'+fmtAxisDate(pts[0].ts)+'</span><span>'+fmtAxisDate(pts[pts.length-1].ts)+'</span>';
 }
 
 function renderSyncStatus(){

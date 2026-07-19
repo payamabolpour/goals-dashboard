@@ -10,36 +10,63 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="icons/icon-192.png">
-<title>داشبورد اهداف مالی</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<title>داشبورد اهداف</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0a0e14;
-    --surface:#111823;
-    --surface-2:#16202c;
-    --line:#233040;
-    --gold:#22d3ee;
-    --gold-bright:#67e8f9;
-    --silver:#9ca3af;
-    --text:#e6edf3;
-    --text-muted:#7c8ba1;
-    --good:#34d399;
-    --bad:#fb7185;
-    --warn:#f59e0b;
+  :root, :root[data-theme="dark"] {
+    --bg: #0a0e14;
+    --surface: #111823;
+    --surface-2: #16202c;
+    --line: #233040;
+    --gold: #22d3ee;
+    --gold-bright: #67e8f9;
+    --silver: #9ca3af;
+    --text: #e6edf3;
+    --text-muted: #7c8ba1;
+    --good: #34d399;
+    --bad: #fb7185;
+    --warn: #f59e0b;
+    --grad-1: #10202a;
+    --grad-2: #0d1a22;
+    --gauge-bg: #2c333d;
+    --input-bg: #181c23;
+    --toast-bg: #20262f;
+  }
+  :root[data-theme="light"] {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --line: #e2e8f0;
+    --gold: #0284c7;
+    --gold-bright: #0ea5e9;
+    --silver: #64748b;
+    --text: #0f172a;
+    --text-muted: #475569;
+    --good: #10b981;
+    --bad: #ef4444;
+    --warn: #f59e0b;
+    --grad-1: #e0f2fe;
+    --grad-2: #f0fdf4;
+    --gauge-bg: #e2e8f0;
+    --input-bg: #f8fafc;
+    --toast-bg: #f1f5f9;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
+  body, header, .overview, .card, .icon-btn, input, button, .modal, .add-card, .toast {
+    transition: background 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
+  }
   body{
     margin:0;
     background:
-      radial-gradient(1200px 600px at 80% -10%, #10202a 0%, transparent 60%),
-      radial-gradient(900px 500px at 5% 110%, #0d1a22 0%, transparent 55%),
+      radial-gradient(1200px 600px at 80% -10%, var(--grad-1) 0%, transparent 60%),
+      radial-gradient(900px 500px at 5% 110%, var(--grad-2) 0%, transparent 55%),
       var(--bg);
     color:var(--text);
     font-family:'Vazirmatn',sans-serif;
     padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 60px);
   }
-  .num{font-family:'JetBrains Mono',monospace;}
+  .num{font-family:'Inter','Plus Jakarta Sans','Vazirmatn',sans-serif;font-variant-numeric:lining-nums tabular-nums;}
   ::selection{background:rgba(201,162,39,.3);}
 
   header{
@@ -71,7 +98,7 @@
   .dot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);}
   .dot.on{background:var(--good);}
   #chartWrap{width:100%;height:120px;margin-top:10px;}
-  .chart-axis{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+  .chart-axis{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:2px;font-family:'Plus Jakarta Sans','Vazirmatn',sans-serif;}
 
   .grid{
     max-width:1100px;margin:0 auto;
@@ -90,8 +117,18 @@
     background:linear-gradient(90deg,transparent,var(--accent,var(--gold)),transparent);opacity:.7;
   }
   .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-  .card-title{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px;}
-  .trend{font-size:11px;font-family:'JetBrains Mono',monospace;}
+  .card-title{
+    font-weight:800;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid rgba(251, 113, 133, 0.35);
+    background:rgba(251, 113, 133, 0.06);
+    padding:3px 8px;
+    border-radius:6px;
+  }
+  .trend{font-size:11px;font-family:'Inter','Plus Jakarta Sans','Vazirmatn',sans-serif;font-variant-numeric:lining-nums tabular-nums;font-weight:600;}
   .trend.up{color:var(--good);}
   .trend.down{color:var(--bad);}
   .del-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;opacity:.45;padding:4px;}
@@ -99,18 +136,18 @@
 
   .gauge-wrap{display:flex;align-items:center;gap:12px;}
   svg.gauge{width:92px;height:92px;flex-shrink:0;}
-  .gauge-pct-text{fill:var(--text);font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;}
+  .gauge-pct-text{fill:var(--text);font-family:'Inter','Plus Jakarta Sans','Vazirmatn',sans-serif;font-variant-numeric:lining-nums tabular-nums;font-size:18px;font-weight:700;}
   .gauge-info{flex:1;min-width:0;}
   .row{display:flex;justify-content:space-between;font-size:11.5px;margin:3px 0;color:var(--text-muted);}
-  .row b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:500;}
+  .row b{color:var(--text);font-family:'Inter','Plus Jakarta Sans','Vazirmatn',sans-serif;font-variant-numeric:lining-nums tabular-nums;font-weight:600;}
   .updated-at{margin-top:6px;font-size:10.5px;color:var(--text-muted);}
   .deadline{margin-top:4px;font-size:10.5px;color:var(--text-muted);}
   .deadline.late{color:var(--warn);}
 
   .edit-row{margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);display:flex;gap:6px;}
   .edit-row input{
-    width:100%;background:#181c23;border:1px solid var(--line);color:var(--text);
-    border-radius:8px;padding:8px;font-family:'JetBrains Mono',monospace;font-size:13px;
+    width:100%;background:var(--input-bg);border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:8px;font-family:'Plus Jakarta Sans','Vazirmatn',sans-serif;font-size:13px;
   }
   .edit-row button{
     background:var(--gold);color:#1a1a1a;border:none;border-radius:8px;padding:0 14px;
@@ -125,7 +162,7 @@
   .add-card summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--text-muted);}
   .add-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px;}
   .add-grid input{
-    background:#181c23;border:1px solid var(--line);color:var(--text);
+    background:var(--input-bg);border:1px solid var(--line);color:var(--text);
     border-radius:8px;padding:9px 10px;font-family:'Vazirmatn',sans-serif;font-size:13px;width:100%;
   }
   .add-grid label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px;}
@@ -160,8 +197,8 @@
   .modal p{margin:0 0 14px;font-size:12px;color:var(--text-muted);line-height:1.9;}
   .modal label{font-size:11.5px;color:var(--text-muted);display:block;margin:10px 0 4px;}
   .modal input{
-    width:100%;background:#181c23;border:1px solid var(--line);color:var(--text);
-    border-radius:8px;padding:9px 10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;
+    width:100%;background:var(--input-bg);border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:9px 10px;font-family:'Plus Jakarta Sans','Vazirmatn',sans-serif;font-size:12.5px;
   }
   .modal-actions{display:flex;gap:8px;margin-top:16px;}
   .modal-actions button{
@@ -175,11 +212,176 @@
 
   .toast-wrap{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 16px);left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:60;pointer-events:none;}
   .toast{
-    background:#20262f;border:1px solid var(--line);color:var(--text);
+    background:var(--toast-bg);border:1px solid var(--line);color:var(--text);
     padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.35);
     opacity:0;transform:translateY(8px);transition:.25s;
   }
   .toast.show{opacity:1;transform:none;}
+
+  /* Navigation Menu Styles */
+  .menu-wrap {
+    position: relative;
+    z-index: 95;
+  }
+  .menu-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 100;
+    width: 200px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    padding: 6px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    transform-origin: top right;
+    animation: menuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes menuFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-6px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .menu-dropdown.show {
+    display: flex;
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: 0.15s;
+    cursor: pointer;
+    text-align: right;
+  }
+  .menu-item:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .menu-item.active {
+    color: var(--gold-bright);
+    background: rgba(34, 211, 238, 0.08);
+    border-right: 3px solid var(--gold-bright);
+    font-weight: 700;
+  }
+  .menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: none;
+    background: transparent;
+  }
+  .menu-overlay.show {
+    display: block;
+  }
+  
+  /* View Transition Styles */
+  .app-view {
+    animation: viewFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes viewFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Subtitle Transition Styles */
+  #appSubtitle {
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #appSubtitle.fade-out {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%237c8ba1' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+  }
+
+  /* Language Switcher Styles */
+  .lang-flag-btn {
+    font-size: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 4px;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+  }
+  .lang-flag-btn.active {
+    background: rgba(34, 211, 238, 0.15);
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.25);
+  }
+  .lang-flag-btn:not(.active) {
+    opacity: 0.55;
+    filter: grayscale(0.25);
+  }
+  .lang-flag-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  /* Direction Specific Overrides */
+  [dir="rtl"] select {
+    background-position: left 10px center;
+    padding-left: 30px !important;
+    padding-right: 12px !important;
+  }
+  [dir="ltr"] select {
+    background-position: right 10px center;
+    padding-right: 30px !important;
+    padding-left: 12px !important;
+  }
+  [dir="rtl"] .modal-close {
+    left: 16px;
+    right: auto;
+  }
+  [dir="ltr"] .modal-close {
+    right: 16px;
+    left: auto;
+  }
+  [dir="rtl"] .menu-dropdown {
+    right: 0;
+    left: auto;
+    transform-origin: top right;
+  }
+  [dir="ltr"] .menu-dropdown {
+    left: 0;
+    right: auto;
+    transform-origin: top left;
+  }
+  [dir="rtl"] .menu-item {
+    text-align: right;
+    border-right: 3px solid transparent;
+    border-left: none;
+  }
+  [dir="ltr"] .menu-item {
+    text-align: left;
+    border-left: 3px solid transparent;
+    border-right: none;
+  }
+  [dir="rtl"] .menu-item.active {
+    border-right: 3px solid var(--gold-bright);
+    border-left: none;
+  }
+  [dir="ltr"] .menu-item.active {
+    border-left: 3px solid var(--gold-bright);
+    border-right: none;
+  }
 </style>
 </head>
 <body>
@@ -190,21 +392,54 @@
 </div>
 
 <header>
-  <div>
-    <h1>داشبورد اهداف مالی</h1>
-    <p>سرمایه، طلا، نقره، کریپتو و خودرو</p>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <div class="menu-wrap">
+      <button class="icon-btn" id="menuBtn" title="منو" onclick="toggleMenu()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+      <div class="menu-dropdown" id="menuDropdown">
+        <div class="menu-item" id="menu-profile-btn" onclick="navigateTo('profile')">
+          <span class="menu-icon">👤</span>
+          <span class="menu-text">پروفایل</span>
+        </div>
+        <div class="menu-item active" id="menu-goals-btn" onclick="navigateTo('goals')">
+          <span class="menu-icon">🎯</span>
+          <span class="menu-text">اهداف</span>
+        </div>
+        <div class="menu-item" id="menu-income-btn" onclick="navigateTo('income')">
+          <span class="menu-icon">💰</span>
+          <span class="menu-text">درآمد</span>
+        </div>
+        <!-- Compact Language Switcher in Menu -->
+        <div style="border-top: 1px dashed var(--line); margin-top: 6px; padding-top: 10px; display: flex; justify-content: center; gap: 16px; padding-bottom: 4px;">
+          <button class="lang-flag-btn" onclick="setLanguage('fa'); event.stopPropagation();" id="lang-fa-menu" title="فارسی">🇮🇷</button>
+          <button class="lang-flag-btn" onclick="setLanguage('en'); event.stopPropagation();" id="lang-en-menu" title="English">🇺🇸</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h1 id="appTitle">داشبورد اهداف</h1>
+      <p id="appSubtitle">سرمایه، طلا، نقره، کریپتو و خودرو</p>
+    </div>
   </div>
   <div class="head-actions">
+    <button class="icon-btn" id="themeBtn" title="تغییر پوسته">☀️</button>
     <button class="icon-btn" id="syncBtn" title="همگام‌سازی">⟳</button>
     <button class="icon-btn" id="settingsBtn" title="تنظیمات همگام‌سازی">⚙</button>
   </div>
 </header>
 
+<div id="view-goals" class="app-view">
 <div class="overview">
   <div class="overview-top">
     <div>
       <div class="val num" id="overallPct">—</div>
-      <div class="lbl">میانگین پیشرفت کل اهداف</div>
+      <div class="lbl" id="lbl-overall-pct">میانگین پیشرفت کل اهداف</div>
     </div>
     <div class="sync-status"><span class="dot" id="syncDot"></span><span id="syncText">همگام‌سازی غیرفعال</span></div>
   </div>
@@ -215,36 +450,177 @@
 <div class="grid" id="grid"></div>
 <div class="empty" id="emptyMsg" style="display:none">هنوز هدفی ثبت نکردی. از فرم پایین یکی اضافه کن.</div>
 
-<details class="add-card">
-  <summary>+ افزودن هدف جدید</summary>
+<details class="add-card" id="add-goal-details">
+  <summary id="add-goal-summary">+ افزودن هدف جدید</summary>
   <div class="add-grid">
-    <div><label>عنوان هدف</label><input id="f-name" placeholder="مثلاً طلای آب‌شده"></div>
-    <div><label>واحد</label><input id="f-unit" placeholder="گرم / دلار / عدد"></div>
-    <div><label>مقدار فعلی</label><input id="f-current" type="number" placeholder="0"></div>
-    <div><label>مقدار هدف</label><input id="f-target" type="number" placeholder="100"></div>
-    <div><label>سررسید</label><input id="f-deadline" type="date"></div>
-    <div><label>رنگ</label><input id="f-color" type="color" value="#c9a227" style="padding:2px;height:38px;"></div>
+    <div><label id="lbl-f-name">عنوان هدف</label><input id="f-name" placeholder="مثلاً طلای آب‌شده"></div>
+    <div>
+      <label id="lbl-f-unit">واحد</label>
+      <select id="f-unit" style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 13px;">
+        <option value="ریال">ریال (IRR)</option>
+        <option value="تومان" selected>تومان</option>
+        <option value="دلار">دلار (USD)</option>
+        <option value="گرم">گرم</option>
+        <option value="عدد">عدد</option>
+      </select>
+    </div>
+    <div><label id="lbl-f-current">مقدار فعلی</label><input id="f-current" type="number" class="num" placeholder="0"></div>
+    <div><label id="lbl-f-target">مقدار هدف</label><input id="f-target" type="number" class="num" placeholder="100"></div>
+    <div><label id="lbl-f-deadline">سررسید</label><input id="f-deadline" type="date"></div>
+    <div><label id="lbl-f-color">رنگ</label><input id="f-color" type="color" value="#c9a227" style="padding:2px;height:38px;"></div>
   </div>
   <div class="err-msg" id="addErr">لطفاً عنوان و مقدار هدف را وارد کن</div>
-  <button class="add-submit" onclick="addGoal()">ثبت هدف</button>
+  <button id="add-goal-submit" class="add-submit" onclick="addGoal()">ثبت هدف</button>
 </details>
 
-<div class="footer-note">داده‌ها روی همین گوشی ذخیره می‌شن؛ اگه همگام‌سازی رو فعال کنی، بین دستگاه‌هات هم سینک می‌شه.</div>
+<div class="footer-note" id="lbl-footer-note">داده‌ها روی همین گوشی ذخیره می‌شن؛ اگه همگام‌سازی رو فعال کنی، بین دستگاه‌هات هم سینک می‌شه.</div>
+</div>
+
+<!-- Profile Page View -->
+<div id="view-profile" class="app-view" style="display:none; max-width:1100px; margin:0 auto 18px;">
+  <div class="card" style="margin-bottom: 18px; --accent: var(--gold-bright);">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+      <div id="profile-avatar" style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--good)); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #1a1a1a;">
+        پ
+      </div>
+      <div>
+        <h2 style="margin: 0; font-size: 18px; font-weight: 800;" id="profile-display-name">پیام ابولپور</h2>
+        <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 12px;" id="profile-display-email">payamabolpour@gmail.com</p>
+      </div>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label id="lbl-p-firstname" style="font-size: 11.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">نام</label>
+          <input id="p-firstname" type="text" placeholder="مثلاً پیام" style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 13px;">
+        </div>
+        <div>
+          <label id="lbl-p-lastname" style="font-size: 11.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">نام خانوادگی</label>
+          <input id="p-lastname" type="text" placeholder="مثلاً ابولپور" style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 13px;">
+        </div>
+      </div>
+      
+      <div>
+        <label id="lbl-p-email" style="font-size: 11.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">آدرس ایمیل</label>
+        <input id="p-email" type="email" placeholder="مثلاً payam@example.com" style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; text-align: left; direction: ltr;">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label id="lbl-p-currency" style="font-size: 11.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">واحد پول ترجیحی</label>
+          <select id="p-currency" style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 13px;">
+            <option value="تومان">تومان</option>
+            <option value="ریال">ریال</option>
+            <option value="دلار">دلار ($)</option>
+            <option value="یورو">یورو (€)</option>
+          </select>
+        </div>
+        <div>
+          <label id="lbl-p-risk" style="font-size: 11.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">سطح ریسک مالی</label>
+          <select id="p-risk" style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 13px;">
+            <option value="low">کم ریسک (محافظه‌کارانه)</option>
+            <option value="medium" selected>ریسک متوسط (متعادل)</option>
+            <option value="high">ریسک بالا (پویا / تهاجمی)</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label id="lbl-p-bio" style="font-size: 11.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">بیوگرافی یا یادداشت کوتاه مالی</label>
+        <textarea id="p-bio" rows="2" placeholder="برنامه‌ریزی برای آینده بهتر..." style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 13px; resize: none;"></textarea>
+      </div>
+      
+      <button id="p-save-btn" class="add-submit" style="margin-top: 8px; width: 100%;" onclick="saveProfile()">ذخیره تغییرات پروفایل</button>
+    </div>
+  </div>
+</div>
+
+<!-- Income Page View -->
+<div id="view-income" class="app-view" style="display:none; max-width:1100px; margin:0 auto 18px;">
+  <!-- Income Stats -->
+  <div class="overview" style="margin-bottom: 18px; padding: 18px 18px 14px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div class="val num" id="totalIncomeVal" style="font-size: 24px; font-weight: 700;">۰</div>
+        <div class="lbl" id="lbl-total-income-lbl">مجموع درآمدهای ثبت شده</div>
+      </div>
+      <div style="text-align: end;">
+        <div class="val num" style="font-size: 20px; color: var(--good); font-weight: 700;" id="avgIncomeVal">۰ تراکنش</div>
+        <div class="lbl" id="lbl-income-count-lbl">تعداد تراکنش‌ها</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Income Form -->
+  <div class="add-card" style="margin-bottom: 18px; display: block; border-style: solid;">
+    <div id="income-form-title" style="font-family: 'Plus Jakarta Sans', 'Vazirmatn', sans-serif; font-weight: 700; font-size: 14.5px; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+      <span>💰</span> ثبت درآمد جدید
+    </div>
+    <div class="add-grid">
+      <div>
+        <label id="lbl-inc-title">عنوان درآمد</label>
+        <input id="inc-title" placeholder="مثلاً حقوق تیرماه">
+      </div>
+      <div>
+        <label id="lbl-inc-amount">مبلغ (واحد پول)</label>
+        <input id="inc-amount" type="number" class="num" placeholder="مثلاً 25000000">
+      </div>
+      <div>
+        <label id="lbl-inc-category">دسته‌بندی</label>
+        <select id="inc-category" style="width: 100%; background: var(--input-bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 9px 10px; font-family: inherit; font-size: 13px;">
+          <option value="حقوق">حقوق</option>
+          <option value="سرمایه‌گذاری">سرمایه‌گذاری</option>
+          <option value="کسب‌وکار">کسب‌وکار</option>
+          <option value="هدیه">هدیه</option>
+          <option value="سایر">سایر</option>
+        </select>
+      </div>
+      <div>
+        <label id="lbl-inc-date">تاریخ دریافت</label>
+        <input id="inc-date" type="date">
+      </div>
+    </div>
+    <div class="err-msg" id="incErr">لطفاً عنوان و مبلغ صحیح را وارد کنید</div>
+    <button id="inc-submit-btn" class="add-submit" onclick="addIncome()">ثبت درآمد</button>
+  </div>
+
+  <!-- Income History Card -->
+  <div class="card" style="--accent: var(--good);">
+    <div style="font-weight: 700; font-size: 13.5px; color: var(--text); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+      <span id="income-history-title" style="font-family: 'Plus Jakarta Sans', 'Vazirmatn', sans-serif; font-weight: 700; font-size: 14.5px;">📋 تاریخچه درآمدهای ثبت شده</span>
+      <button id="income-clear-btn" class="del-btn" onclick="clearAllIncomes()" style="font-size: 11px; opacity: 0.7;">حذف همه تاریخچه</button>
+    </div>
+    
+    <div id="income-list" style="display: flex; flex-direction: column; gap: 10px;">
+      <!-- Dynamic list -->
+    </div>
+    <div class="empty" id="incomeEmptyMsg" style="margin: 20px auto; display: none;">هنوز هیچ درآمدی ثبت نکرده‌اید.</div>
+  </div>
+</div>
 
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
-    <h2>همگام‌سازی بین دستگاه‌ها</h2>
-    <p>
+    <h2 id="modal-title">همگام‌سازی بین دستگاه‌ها</h2>
+    <p id="modal-desc">
       داده‌هات از طریق یه Gist خصوصی توی گیت‌هاب خودت ذخیره می‌شه (رایگان و فقط برای خودت).
       برای ساختنش: گیت‌هاب → عکس پروفایل → Settings → Developer settings →
       Personal access tokens → Tokens (classic) → Generate new token،
       فقط دسترسی <b>gist</b> رو تیک بزن و بسازش.
     </p>
-    <label>GitHub Personal Access Token</label>
+    <label id="modal-token-label">GitHub Personal Access Token</label>
     <input id="cfgToken" type="password" placeholder="ghp_xxxxxxxxxxxx">
-    <label>Gist ID (اگه قبلاً ساختی — وگرنه خالی بذار)</label>
+    <label id="modal-gist-label">Gist ID (اگه قبلاً ساختی — وگرنه خالی بذار)</label>
     <input id="cfgGistId" type="text" placeholder="خالی = ساخت خودکار">
+    
+    <!-- Language Switcher in settings modal -->
+    <label id="lbl-lang-settings" style="margin-top: 14px; margin-bottom: 6px; display: block; font-size: 11.5px; color: var(--text-muted);">زبان</label>
+    <div style="display: flex; gap: 16px; align-items: center; justify-content: flex-start; margin-bottom: 14px;">
+      <button class="lang-flag-btn" onclick="setLanguage('fa'); event.stopPropagation();" id="lang-fa-modal" title="فارسی">🇮🇷</button>
+      <button class="lang-flag-btn" onclick="setLanguage('en'); event.stopPropagation();" id="lang-en-modal" title="English">🇺🇸</button>
+    </div>
+
     <div class="modal-actions">
       <button class="btn-secondary" id="disconnectBtn">قطع اتصال</button>
       <button class="btn-primary" id="connectBtn">اتصال و همگام‌سازی</button>
@@ -257,9 +633,904 @@
 <script>
 const STORE_KEY = 'wealth-goals-v2';
 const CFG_KEY = 'wealth-sync-cfg';
+const THEME_KEY = 'wealth-dashboard-theme';
+
+// Translation Dictionary
+const TRANSLATIONS = {
+  fa: {
+    appTitle: "داشبورد اهداف",
+    menuProfile: "پروفایل",
+    menuGoals: "اهداف",
+    menuIncome: "درآمد",
+    
+    themeTitle: "تغییر پوسته",
+    syncTitle: "همگام‌سازی",
+    settingsTitle: "تنظیمات همگام‌سازی",
+    
+    installText: "این صفحه رو می‌تونی مثل یه اپ روی صفحه اصلی گوشیت نصب کنی",
+    installBtn: "نصب",
+    
+    overallPctLabel: "میانگین پیشرفت کل اهداف",
+    syncStatusOn: "همگام: ",
+    syncStatusNot: "متصل، هنوز سینک نشده",
+    syncStatusOff: "همگام‌سازی غیرفعال",
+    
+    chartEmpty: "با چند بار به‌روزرسانی، نمودار روند اینجا شکل می‌گیره",
+    emptyMsg: "هنوز هدفی ثبت نکردی. از فرم پایین یکی اضافه کن.",
+    
+    addCardSummary: "+ افزودن هدف جدید",
+    fNameLabel: "عنوان هدف",
+    fNamePlaceholder: "مثلاً طلای آب‌شده",
+    fUnitLabel: "واحد",
+    fCurrentLabel: "مقدار فعلی",
+    fTargetLabel: "مقدار هدف",
+    fDeadlineLabel: "سررسید",
+    fColorLabel: "رنگ",
+    fErr: "لطفاً عنوان و مقدار هدف را وارد کن",
+    fSubmit: "ثبت هدف",
+    
+    footerNote: "داده‌ها روی همین گوشی ذخیره می‌شن؛ اگه همگام‌سازی رو فعال کنی، بین دستگاه‌هات هم سینک می‌شه.",
+    
+    // Profile
+    pTitle: "پروفایل",
+    pFirstNameLabel: "نام",
+    pFirstNamePlaceholder: "مثلاً پیام",
+    pLastNameLabel: "نام خانوادگی",
+    pLastNamePlaceholder: "مثلاً ابولپور",
+    pEmailLabel: "آدرس ایمیل",
+    pEmailPlaceholder: "مثلاً payam@example.com",
+    pCurrencyLabel: "واحد پول ترجیحی",
+    pRiskLabel: "سطح ریسک مالی",
+    pRiskOptions: {
+      low: "کم ریسک (محافظه‌کارانه)",
+      medium: "ریسک متوسط (متعادل)",
+      high: "ریسک بالا (پویا / تهاجمی)"
+    },
+    pBioLabel: "بیوگرافی یا یادداشت کوتاه مالی",
+    pBioPlaceholder: "برنامه‌ریزی برای آینده بهتر...",
+    pSaveBtn: "ذخیره تغییرات پروفایل",
+    pEmailEmpty: "بدون ایمیل ثبت شده",
+    pSaveSuccess: "تغییرات پروفایل با موفقیت ذخیره شد ✓",
+    
+    // Income
+    incTotalLabel: "مجموع درآمدهای ثبت شده",
+    incCountLabel: "تعداد تراکنش‌ها",
+    incTransactions: " تراکنش",
+    incRegisterTitle: " ثبت درآمد جدید",
+    incTitleLabel: "عنوان درآمد",
+    incTitlePlaceholder: "مثلاً حقوق تیرماه",
+    incAmountLabel: "مبلغ (واحد پول)",
+    incAmountPlaceholder: "مثلاً 25000000",
+    incCategoryLabel: "دسته‌بندی",
+    incDateLabel: "تاریخ دریافت",
+    incErr: "لطفاً عنوان و مبلغ صحیح را وارد کنید",
+    incSubmit: "ثبت درآمد",
+    incHistoryTitle: " تاریخچه درآمدهای ثبت شده",
+    incClearAll: "حذف همه تاریخچه",
+    incEmptyMsg: "هنوز هیچ درآمدی ثبت نکرده‌اید.",
+    incCategorySalary: "حقوق",
+    incCategoryInv: "سرمایه‌گذاری",
+    incCategoryBiz: "کسب‌وکار",
+    incCategoryGift: "هدیه",
+    incCategoryOther: "سایر",
+    incRegistered: "درآمد جدید ثبت شد ✓",
+    incDeleted: "تراکنش درآمد حذف شد ✓",
+    incClearConfirm: "آیا از پاک کردن تمامی درآمدهای ثبت شده مطمئن هستید؟",
+    incCleared: "تمامی تاریخچه درآمدها پاک شد ✓",
+    
+    // Modal
+    modalTitle: "همگام‌سازی بین دستگاه‌ها",
+    modalDesc: "داده‌هات از طریق یه Gist خصوصی توی گیت‌هاب خودت ذخیره می‌شه (رایگان و فقط برای خودت). برای ساختنش: گیت‌هاب ← عکس پروفایل ← Settings ← Developer settings ← Personal access tokens ← Tokens (classic) ← Generate new token، فقط دسترسی <b>gist</b> رو تیک بزن و بسازش.",
+    modalTokenLabel: "GitHub Personal Access Token",
+    modalGistLabel: "Gist ID (اگه قبلاً ساختی — وگرنه خالی بذار)",
+    modalGistPlaceholder: "خالی = ساخت خودکار",
+    modalDisconnect: "قطع اتصال",
+    modalConnect: "اتصال و همگام‌سازی",
+    modalConnected: "متصل شد ✓",
+    modalCreatingGist: "در حال ساخت Gist جدید...",
+    modalConnFailed: "اتصال ناموفق بود — توکن رو بررسی کن (باید دسترسی gist داشته باشه)",
+    modalTokenWarning: "توکن رو وارد کن",
+    modalDisconnectToast: "همگام‌سازی قطع شد",
+    syncFailedToast: "همگام‌سازی ناموفق بود — بعداً دوباره امتحان می‌کنیم",
+    syncPullSuccess: "داده‌ها از حساب گیت‌هابت به‌روز شد",
+    syncCompleted: "همگام‌سازی انجام شد",
+    syncConnErr: "اتصال برقرار نشد — توکن یا Gist ID رو چک کن",
+    
+    // Goal Cards
+    gDelete: "حذف ✕",
+    gCurrent: "فعلی",
+    gTarget: "هدف",
+    gRemaining: "باقی‌مانده",
+    gNotUpdatedYet: "هنوز به‌روزرسانی نشده",
+    gUpdatedToday: "امروز به‌روز شد",
+    gUpdatedYesterday: "دیروز به‌روز شد",
+    gUpdatedDaysAgo: " روز پیش به‌روز شد",
+    gDaysRemaining: " روز مانده",
+    gDeadlinePassed: "گذشته",
+    gAddValuePlaceholder: "افزودن مقدار (+/-)",
+    gAddValueBtn: "ثبت",
+    gAddValueToast: "مقدار جدید به مقدار قبلی اضافه شد ✓",
+    
+    units: {
+      "ریال": "ریال",
+      "تومان": "تومان",
+      "دلار": "دلار",
+      "گرم": "گرم",
+      "عدد": "عدد",
+      "اونس": "اونس",
+      "AED": "درهم"
+    },
+    currencies: {
+      "تومان": "تومان",
+      "ریال": "ریال",
+      "دلار": "دلار",
+      "یورو": "یورو"
+    },
+    rotatingMessages: [
+      "سرمایه‌گذاری بیشتر، درآمد بیشتر",
+      "اهداف بزرگتر، انگیزه بیشتر"
+    ]
+  },
+  en: {
+    appTitle: "Goals Dashboard",
+    menuProfile: "Profile",
+    menuGoals: "Goals",
+    menuIncome: "Income",
+    
+    themeTitle: "Toggle Theme",
+    syncTitle: "Sync Data",
+    settingsTitle: "Sync Settings",
+    
+    installText: "You can install this page as an app on your phone's home screen",
+    installBtn: "Install",
+    
+    overallPctLabel: "Overall Goals Progress Average",
+    syncStatusOn: "Synced: ",
+    syncStatusNot: "Connected, not synced yet",
+    syncStatusOff: "Sync is disabled",
+    
+    chartEmpty: "After a few updates, the trend chart will appear here",
+    emptyMsg: "You haven't set any goals yet. Add one using the form below.",
+    
+    addCardSummary: "+ Add New Goal",
+    fNameLabel: "Goal Title",
+    fNamePlaceholder: "e.g., Gold Bullion",
+    fUnitLabel: "Unit",
+    fCurrentLabel: "Current Value",
+    fTargetLabel: "Target Value",
+    fDeadlineLabel: "Deadline",
+    fColorLabel: "Color",
+    fErr: "Please enter a title and target value",
+    fSubmit: "Submit Goal",
+    
+    footerNote: "Data is saved locally on this device. If you enable synchronization, it will sync across your devices.",
+    
+    // Profile
+    pTitle: "Profile",
+    pFirstNameLabel: "First Name",
+    pFirstNamePlaceholder: "e.g., Payam",
+    pLastNameLabel: "Last Name",
+    pLastNamePlaceholder: "e.g., Abolpour",
+    pEmailLabel: "Email Address",
+    pEmailPlaceholder: "e.g., payam@example.com",
+    pCurrencyLabel: "Preferred Currency",
+    pRiskLabel: "Financial Risk Tolerance",
+    pRiskOptions: {
+      low: "Low Risk (Conservative)",
+      medium: "Medium Risk (Balanced)",
+      high: "High Risk (Aggressive)"
+    },
+    pBioLabel: "Bio or Short Financial Note",
+    pBioPlaceholder: "Planning for a better future...",
+    pSaveBtn: "Save Profile Changes",
+    pEmailEmpty: "No email registered",
+    pSaveSuccess: "Profile changes saved successfully ✓",
+    
+    // Income
+    incTotalLabel: "Total Registered Incomes",
+    incCountLabel: "Transaction Count",
+    incTransactions: " transactions",
+    incRegisterTitle: " Register New Income",
+    incTitleLabel: "Income Title",
+    incTitlePlaceholder: "e.g., July Salary",
+    incAmountLabel: "Amount (Currency)",
+    incAmountPlaceholder: "e.g., 25000000",
+    incCategoryLabel: "Category",
+    incDateLabel: "Receive Date",
+    incErr: "Please enter a valid title and amount",
+    incSubmit: "Register Income",
+    incHistoryTitle: " Registered Income History",
+    incClearAll: "Clear All History",
+    incEmptyMsg: "No income registered yet.",
+    incCategorySalary: "Salary",
+    incCategoryInv: "Investment",
+    incCategoryBiz: "Business",
+    incCategoryGift: "Gift",
+    incCategoryOther: "Other",
+    incRegistered: "New income registered ✓",
+    incDeleted: "Income transaction deleted ✓",
+    incClearConfirm: "Are you sure you want to clear all registered incomes?",
+    incCleared: "All income history cleared ✓",
+    
+    // Modal
+    modalTitle: "Sync Across Devices",
+    modalDesc: "Your data is stored securely via a private Gist in your personal GitHub account (free & completely private). To create it: GitHub → Profile Picture → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token. Only check the <b>gist</b> scope and generate it.",
+    modalTokenLabel: "GitHub Personal Access Token",
+    modalGistLabel: "Gist ID (Leave empty if you don't have one)",
+    modalGistPlaceholder: "Empty = Auto Create",
+    modalDisconnect: "Disconnect",
+    modalConnect: "Connect & Sync",
+    modalConnected: "Connected successfully ✓",
+    modalCreatingGist: "Creating new Gist...",
+    modalConnFailed: "Connection failed - please check token scope (must have gist access)",
+    modalTokenWarning: "Please enter your token",
+    modalDisconnectToast: "Sync disconnected",
+    syncFailedToast: "Sync failed - we'll try again later",
+    syncPullSuccess: "Data successfully loaded from your GitHub account",
+    syncCompleted: "Sync completed successfully",
+    syncConnErr: "Connection failed - check your token or Gist ID",
+    
+    // Goal Cards
+    gDelete: "Delete ✕",
+    gCurrent: "Current",
+    gTarget: "Target",
+    gRemaining: "Remaining",
+    gNotUpdatedYet: "Not updated yet",
+    gUpdatedToday: "Updated today",
+    gUpdatedYesterday: "Updated yesterday",
+    gUpdatedDaysAgo: " days ago",
+    gDaysRemaining: " days remaining",
+    gDeadlinePassed: "Passed",
+    gAddValuePlaceholder: "Add value (+/-)",
+    gAddValueBtn: "Add",
+    gAddValueToast: "New value added to the current value ✓",
+    
+    units: {
+      "ریال": "Rial",
+      "تومان": "Toman",
+      "دلار": "Dollar",
+      "گرم": "Gram",
+      "عدد": "Number",
+      "اونس": "Ounce",
+      "AED": "AED"
+    },
+    currencies: {
+      "تومان": "Toman",
+      "ریال": "Rial",
+      "دلار": "Dollar",
+      "یورو": "Euro"
+    },
+    rotatingMessages: [
+      "More Income, More Investment",
+      "Bigger Goals, More Motivation"
+    ]
+  }
+};
+
+let currentLang = localStorage.getItem('wealth-lang-v1') || 'fa';
+
+function t(key) {
+  const trans = TRANSLATIONS[currentLang];
+  return trans ? trans[key] : '';
+}
+
+function translateUnit(unit) {
+  if (!unit) return '';
+  const u = TRANSLATIONS[currentLang].units;
+  return (u && u[unit]) || unit;
+}
+
+function translateCurrency(curr) {
+  if (!curr) return '';
+  const c = TRANSLATIONS[currentLang].currencies;
+  return (c && c[curr]) || curr;
+}
+
+function getGoalName(g) {
+  if (currentLang === 'en') {
+    if (g.name === 'نقره') return 'Silver';
+    if (g.name === 'طلا') return 'Gold';
+    if (g.name === 'کریپتو') return 'Crypto';
+    if (g.name === 'دلار نقد') return 'Cash USD';
+    if (g.name === 'بی‌ام‌و M550i') return 'BMW M550i';
+  }
+  return g.name;
+}
+
+function getCategoryLabel(cat) {
+  if (currentLang === 'fa') {
+    return cat;
+  }
+  if (cat === 'حقوق') return 'Salary';
+  if (cat === 'سرمایه‌گذاری') return 'Investment';
+  if (cat === 'کسب‌وکار') return 'Business';
+  if (cat === 'هدیه') return 'Gift';
+  if (cat === 'سایر') return 'Other';
+  return cat;
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('wealth-lang-v1', lang);
+  applyLanguage();
+  render();
+  if (currentView === 'income') renderIncome();
+  if (currentView === 'profile') renderProfile();
+  renderSyncStatus();
+}
+
+function applyLanguage() {
+  document.documentElement.setAttribute('lang', currentLang);
+  document.documentElement.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+  
+  // Update static texts
+  document.getElementById('appTitle').textContent = t('appTitle');
+  const menuBtn = document.getElementById('menuBtn');
+  if (menuBtn) menuBtn.title = currentLang === 'fa' ? 'منو' : 'Menu';
+  
+  // Rotating messages
+  ROTATING_MESSAGES[0] = t('rotatingMessages')[0];
+  ROTATING_MESSAGES[1] = t('rotatingMessages')[1];
+  
+  const sub = document.getElementById('appSubtitle');
+  if (sub) {
+    if (currentView === 'goals') {
+      sub.textContent = ROTATING_MESSAGES[currentMessageIndex];
+    } else if (currentView === 'profile') {
+      sub.textContent = currentLang === 'fa' ? 'مدیریت و ویرایش اطلاعات کاربری شما' : 'Manage and edit your user profile';
+    } else if (currentView === 'income') {
+      sub.textContent = currentLang === 'fa' ? 'ردیابی و مدیریت منابع درآمدی' : 'Track and manage your income sources';
+    }
+  }
+  
+  // Menu
+  document.querySelector('#menu-profile-btn .menu-text').textContent = t('menuProfile');
+  document.querySelector('#menu-goals-btn .menu-text').textContent = t('menuGoals');
+  document.querySelector('#menu-income-btn .menu-text').textContent = t('menuIncome');
+  
+  // Header buttons
+  document.getElementById('themeBtn').title = t('themeTitle');
+  document.getElementById('syncBtn').title = t('syncTitle');
+  document.getElementById('settingsBtn').title = t('settingsTitle');
+  
+  // Install Banner
+  const installBannerSpan = document.querySelector('#installBanner span');
+  if (installBannerSpan) installBannerSpan.textContent = t('installText');
+  const installBtn = document.getElementById('installBtn');
+  if (installBtn) installBtn.textContent = t('installBtn');
+  
+  // Overview
+  const lblOverallPct = document.getElementById('lbl-overall-pct');
+  if (lblOverallPct) lblOverallPct.textContent = t('overallPctLabel');
+  
+  // Empty message
+  const emptyMsg = document.getElementById('emptyMsg');
+  if (emptyMsg) emptyMsg.textContent = t('emptyMsg');
+  
+  // Add Goal Form
+  const addGoalSummary = document.getElementById('add-goal-summary');
+  if (addGoalSummary) addGoalSummary.textContent = t('addCardSummary');
+  const lblFName = document.getElementById('lbl-f-name');
+  if (lblFName) lblFName.textContent = t('fNameLabel');
+  const fNameInput = document.getElementById('f-name');
+  if (fNameInput) fNameInput.placeholder = t('fNamePlaceholder');
+  const lblFUnit = document.getElementById('lbl-f-unit');
+  if (lblFUnit) lblFUnit.textContent = t('fUnitLabel');
+  
+  const fUnitSelect = document.getElementById('f-unit');
+  if (fUnitSelect) {
+    fUnitSelect.options[0].text = currentLang === 'fa' ? 'ریال (IRR)' : 'Rial (IRR)';
+    fUnitSelect.options[1].text = currentLang === 'fa' ? 'تومان' : 'Toman';
+    fUnitSelect.options[2].text = currentLang === 'fa' ? 'دلار (USD)' : 'Dollar (USD)';
+    fUnitSelect.options[3].text = currentLang === 'fa' ? 'گرم' : 'Gram';
+    fUnitSelect.options[4].text = currentLang === 'fa' ? 'عدد' : 'Number';
+  }
+  
+  const lblFCurrent = document.getElementById('lbl-f-current');
+  if (lblFCurrent) lblFCurrent.textContent = t('fCurrentLabel');
+  const lblFTarget = document.getElementById('lbl-f-target');
+  if (lblFTarget) lblFTarget.textContent = t('fTargetLabel');
+  const lblFDeadline = document.getElementById('lbl-f-deadline');
+  if (lblFDeadline) lblFDeadline.textContent = t('fDeadlineLabel');
+  const lblFColor = document.getElementById('lbl-f-color');
+  if (lblFColor) lblFColor.textContent = t('fColorLabel');
+  const addErr = document.getElementById('addErr');
+  if (addErr) addErr.textContent = t('fErr');
+  const addGoalSubmit = document.getElementById('add-goal-submit');
+  if (addGoalSubmit) addGoalSubmit.textContent = t('fSubmit');
+  
+  // Footer note
+  const lblFooterNote = document.getElementById('lbl-footer-note');
+  if (lblFooterNote) lblFooterNote.textContent = t('footerNote');
+  
+  // Profile View
+  const lblPFName = document.getElementById('lbl-p-firstname');
+  if (lblPFName) lblPFName.textContent = t('pFirstNameLabel');
+  const pFNameInput = document.getElementById('p-firstname');
+  if (pFNameInput) pFNameInput.placeholder = t('pFirstNamePlaceholder');
+  const lblPLName = document.getElementById('lbl-p-lastname');
+  if (lblPLName) lblPLName.textContent = t('pLastNameLabel');
+  const pLNameInput = document.getElementById('p-lastname');
+  if (pLNameInput) pLNameInput.placeholder = t('pLastNamePlaceholder');
+  const lblPEmail = document.getElementById('lbl-p-email');
+  if (lblPEmail) lblPEmail.textContent = t('pEmailLabel');
+  const pEmailInput = document.getElementById('p-email');
+  if (pEmailInput) pEmailInput.placeholder = t('pEmailPlaceholder');
+  const lblPCurrency = document.getElementById('lbl-p-currency');
+  if (lblPCurrency) lblPCurrency.textContent = t('pCurrencyLabel');
+  
+  const pCurrencySelect = document.getElementById('p-currency');
+  if (pCurrencySelect) {
+    pCurrencySelect.options[0].text = currentLang === 'fa' ? 'تومان' : 'Toman';
+    pCurrencySelect.options[1].text = currentLang === 'fa' ? 'ریال' : 'Rial';
+    pCurrencySelect.options[2].text = currentLang === 'fa' ? 'دلار ($)' : 'Dollar ($)';
+    pCurrencySelect.options[3].text = currentLang === 'fa' ? 'یورو (€)' : 'Euro (€)';
+  }
+  
+  const lblPRisk = document.getElementById('lbl-p-risk');
+  if (lblPRisk) lblPRisk.textContent = t('pRiskLabel');
+  
+  const pRiskSelect = document.getElementById('p-risk');
+  if (pRiskSelect) {
+    pRiskSelect.options[0].text = t('pRiskOptions').low;
+    pRiskSelect.options[1].text = t('pRiskOptions').medium;
+    pRiskSelect.options[2].text = t('pRiskOptions').high;
+  }
+  
+  const lblPBio = document.getElementById('lbl-p-bio');
+  if (lblPBio) lblPBio.textContent = t('pBioLabel');
+  const pBioTextarea = document.getElementById('p-bio');
+  if (pBioTextarea) pBioTextarea.placeholder = t('pBioPlaceholder');
+  const pSaveBtn = document.getElementById('p-save-btn');
+  if (pSaveBtn) pSaveBtn.textContent = t('pSaveBtn');
+  
+  // Income View
+  const lblTotalIncome = document.getElementById('lbl-total-income-lbl');
+  if (lblTotalIncome) lblTotalIncome.textContent = t('incTotalLabel');
+  const lblIncomeCount = document.getElementById('lbl-income-count-lbl');
+  if (lblIncomeCount) lblIncomeCount.textContent = t('incCountLabel');
+  
+  const incomeFormTitle = document.getElementById('income-form-title');
+  if (incomeFormTitle) incomeFormTitle.innerHTML = '<span>💰</span> ' + t('incRegisterTitle');
+  
+  const lblIncTitle = document.getElementById('lbl-inc-title');
+  if (lblIncTitle) lblIncTitle.textContent = t('incTitleLabel');
+  const incTitleInput = document.getElementById('inc-title');
+  if (incTitleInput) incTitleInput.placeholder = t('incTitlePlaceholder');
+  const lblIncAmount = document.getElementById('lbl-inc-amount');
+  if (lblIncAmount) lblIncAmount.textContent = t('incAmountLabel');
+  const incAmountInput = document.getElementById('inc-amount');
+  if (incAmountInput) incAmountInput.placeholder = t('incAmountPlaceholder');
+  
+  const lblIncCategory = document.getElementById('lbl-inc-category');
+  if (lblIncCategory) lblIncCategory.textContent = t('incCategoryLabel');
+  
+  const incCategorySelect = document.getElementById('inc-category');
+  if (incCategorySelect) {
+    incCategorySelect.options[0].text = t('incCategorySalary');
+    incCategorySelect.options[1].text = t('incCategoryInv');
+    incCategorySelect.options[2].text = t('incCategoryBiz');
+    incCategorySelect.options[3].text = t('incCategoryGift');
+    incCategorySelect.options[4].text = t('incCategoryOther');
+  }
+  
+  const lblIncDate = document.getElementById('lbl-inc-date');
+  if (lblIncDate) lblIncDate.textContent = t('incDateLabel');
+  const incErr = document.getElementById('incErr');
+  if (incErr) incErr.textContent = t('incErr');
+  const incSubmitBtn = document.getElementById('inc-submit-btn');
+  if (incSubmitBtn) incSubmitBtn.textContent = t('incSubmit');
+  
+  const incomeHistoryTitle = document.getElementById('income-history-title');
+  if (incomeHistoryTitle) incomeHistoryTitle.textContent = t('incHistoryTitle');
+  const incomeClearBtn = document.getElementById('income-clear-btn');
+  if (incomeClearBtn) incomeClearBtn.textContent = t('incClearAll');
+  const incomeEmptyMsg = document.getElementById('incomeEmptyMsg');
+  if (incomeEmptyMsg) incomeEmptyMsg.textContent = t('incEmptyMsg');
+  
+  // Modal View
+  const modalTitle = document.getElementById('modal-title');
+  if (modalTitle) modalTitle.textContent = t('modalTitle');
+  const modalDesc = document.getElementById('modal-desc');
+  if (modalDesc) modalDesc.innerHTML = t('modalDesc');
+  const modalTokenLabel = document.getElementById('modal-token-label');
+  if (modalTokenLabel) modalTokenLabel.textContent = t('modalTokenLabel');
+  const modalGistLabel = document.getElementById('modal-gist-label');
+  if (modalGistLabel) modalGistLabel.textContent = t('modalGistLabel');
+  const cfgGistIdInput = document.getElementById('cfgGistId');
+  if (cfgGistIdInput) cfgGistIdInput.placeholder = t('modalGistPlaceholder');
+  const disconnectBtn = document.getElementById('disconnectBtn');
+  if (disconnectBtn) disconnectBtn.textContent = t('modalDisconnect');
+  const connectBtn = document.getElementById('connectBtn');
+  if (connectBtn) connectBtn.textContent = t('modalConnect');
+  
+  const lblLangSettings = document.getElementById('lbl-lang-settings');
+  if (lblLangSettings) lblLangSettings.textContent = currentLang === 'fa' ? 'زبان' : 'Language';
+  
+  // Active state for switcher flags
+  const activeClass = 'active';
+  ['menu', 'modal'].forEach(function(suffix) {
+    const faBtn = document.getElementById('lang-fa-' + suffix);
+    const enBtn = document.getElementById('lang-en-' + suffix);
+    if (faBtn && enBtn) {
+      if (currentLang === 'fa') {
+        faBtn.classList.add(activeClass);
+        enBtn.classList.remove(activeClass);
+      } else {
+        enBtn.classList.add(activeClass);
+        faBtn.classList.remove(activeClass);
+      }
+    }
+  });
+}
+
+const ROTATING_MESSAGES = [
+  "سرمایه‌گذاری بیشتر، درآمد بیشتر",
+  "اهداف بزرگتر، انگیزه بیشتر"
+];
+let currentMessageIndex = 0;
+let subtitleInterval = null;
+
 let goals = [];
 let history = [];
 let cfg = { token:'', gistId:'' };
+let currentTheme = localStorage.getItem(THEME_KEY) || 'dark';
+let currentView = 'goals';
+
+let profile = {
+  firstName: 'پیام',
+  lastName: 'ابولپور',
+  name: 'پیام ابولپور',
+  email: 'payamabolpour@gmail.com',
+  currency: 'تومان',
+  risk: 'medium',
+  bio: 'برنامه‌ریزی برای آینده بهتر...'
+};
+
+let incomes = [];
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const themeBtn = document.getElementById('themeBtn');
+  if (themeBtn) {
+    themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+  const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+  if (metaThemeColor) {
+    metaThemeColor.setAttribute('content', theme === 'dark' ? '#12151a' : '#f8fafc');
+  }
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem(THEME_KEY, currentTheme);
+  applyTheme(currentTheme);
+  renderChart();
+}
+
+/* SPA Navigation & Menu Logic */
+function toggleMenu() {
+  const menu = document.getElementById('menuDropdown');
+  const overlay = document.getElementById('menuOverlay');
+  if (menu && overlay) {
+    const isShowing = menu.classList.contains('show');
+    if (isShowing) {
+      closeMenu();
+    } else {
+      menu.classList.add('show');
+      overlay.classList.add('show');
+    }
+  }
+}
+
+function closeMenu() {
+  const menu = document.getElementById('menuDropdown');
+  const overlay = document.getElementById('menuOverlay');
+  if (menu && overlay) {
+    menu.classList.remove('show');
+    overlay.classList.remove('show');
+  }
+}
+
+function navigateTo(viewId) {
+  currentView = viewId;
+  
+  // Hide all views, then show target
+  document.querySelectorAll('.app-view').forEach(function(el) {
+    el.style.display = 'none';
+  });
+  
+  const targetView = document.getElementById('view-' + viewId);
+  if (targetView) {
+    targetView.style.display = 'block';
+  }
+  
+  // Update active state in menu
+  document.querySelectorAll('.menu-item').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  const activeBtn = document.getElementById('menu-' + viewId + '-btn');
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+  
+  closeMenu();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // Dynamic header sub description
+  const sub = document.getElementById('appSubtitle');
+  if (sub) {
+    if (viewId === 'goals') {
+      sub.textContent = ROTATING_MESSAGES[currentMessageIndex];
+    } else if (viewId === 'profile') {
+      sub.textContent = currentLang === 'fa' ? 'مدیریت و ویرایش اطلاعات کاربری شما' : 'Manage and edit your user profile';
+    } else if (viewId === 'income') {
+      sub.textContent = currentLang === 'fa' ? 'ردیابی و مدیریت منابع درآمدی' : 'Track and manage your income sources';
+    }
+  }
+  
+  if (viewId === 'income') {
+    renderIncome();
+  } else if (viewId === 'profile') {
+    renderProfile();
+  } else if (viewId === 'goals') {
+    render();
+  }
+}
+
+/* Subtitle Rotation Functions */
+function updateSubtitleText() {
+  const sub = document.getElementById('appSubtitle');
+  if (!sub || currentView !== 'goals') return;
+  sub.classList.add('fade-out');
+  setTimeout(function() {
+    sub.textContent = ROTATING_MESSAGES[currentMessageIndex];
+    sub.classList.remove('fade-out');
+  }, 250);
+}
+
+function startSubtitleRotation() {
+  if (subtitleInterval) clearInterval(subtitleInterval);
+  const sub = document.getElementById('appSubtitle');
+  if (sub && currentView === 'goals') {
+    sub.textContent = ROTATING_MESSAGES[currentMessageIndex];
+  }
+  subtitleInterval = setInterval(function() {
+    if (currentView === 'goals') {
+      currentMessageIndex = (currentMessageIndex + 1) % ROTATING_MESSAGES.length;
+      updateSubtitleText();
+    }
+  }, 5000);
+}
+
+/* Profile View Logic */
+function loadProfile() {
+  const hasSaved = localStorage.getItem('wealth-profile-v1');
+  if (hasSaved) {
+    try {
+      profile = JSON.parse(hasSaved);
+      if (!profile.firstName && !profile.lastName && profile.name) {
+        const parts = profile.name.trim().split(/\s+/);
+        profile.firstName = parts[0] || '';
+        profile.lastName = parts.slice(1).join(' ') || '';
+      }
+    } catch(e) {}
+  } else {
+    if (currentLang === 'fa') {
+      profile = {
+        firstName: 'پیام',
+        lastName: 'ابولپور',
+        name: 'پیام ابولپور',
+        email: 'payamabolpour@gmail.com',
+        currency: 'تومان',
+        risk: 'medium',
+        bio: 'برنامه‌ریزی برای آینده بهتر...'
+      };
+    } else {
+      profile = {
+        firstName: 'Payam',
+        lastName: 'Abolpour',
+        name: 'Payam Abolpour',
+        email: 'payamabolpour@gmail.com',
+        currency: 'دلار',
+        risk: 'medium',
+        bio: 'Planning for a better future...'
+      };
+    }
+  }
+}
+
+function saveProfile() {
+  const firstNameVal = document.getElementById('p-firstname').value.trim();
+  const lastNameVal = document.getElementById('p-lastname').value.trim();
+  const emailVal = document.getElementById('p-email').value.trim();
+  const currencyVal = document.getElementById('p-currency').value;
+  const riskVal = document.getElementById('p-risk').value;
+  const bioVal = document.getElementById('p-bio').value.trim();
+  
+  profile = {
+    firstName: firstNameVal || (currentLang === 'fa' ? 'پیام' : 'Payam'),
+    lastName: lastNameVal || (currentLang === 'fa' ? 'ابولپور' : 'Abolpour'),
+    email: emailVal || 'payamabolpour@gmail.com',
+    currency: currencyVal || 'تومان',
+    risk: riskVal || 'medium',
+    bio: bioVal || (currentLang === 'fa' ? 'برنامه‌ریزی برای آینده بهتر...' : 'Planning for a better future...')
+  };
+  profile.name = (profile.firstName + ' ' + profile.lastName).trim();
+  
+  localStorage.setItem('wealth-profile-v1', JSON.stringify(profile));
+  
+  // Update avatar display
+  renderProfileCard();
+  toast(t('pSaveSuccess'));
+  pushToGist();
+}
+
+function renderProfileCard() {
+  loadProfile();
+  const displayAvatar = document.getElementById('profile-avatar');
+  const fullName = ((profile.firstName || '') + ' ' + (profile.lastName || '')).trim();
+  if (displayAvatar && fullName) {
+    displayAvatar.textContent = fullName.charAt(0);
+  }
+  const displayName = document.getElementById('profile-display-name');
+  if (displayName) {
+    displayName.textContent = fullName || (currentLang === 'fa' ? 'بدون نام' : 'No Name');
+  }
+  const displayEmail = document.getElementById('profile-display-email');
+  if (displayEmail) {
+    displayEmail.textContent = profile.email || t('pEmailEmpty');
+  }
+}
+
+function renderProfile() {
+  loadProfile();
+  const fNameInput = document.getElementById('p-firstname');
+  if (fNameInput) fNameInput.value = profile.firstName || '';
+  const lNameInput = document.getElementById('p-lastname');
+  if (lNameInput) lNameInput.value = profile.lastName || '';
+  document.getElementById('p-email').value = profile.email || '';
+  document.getElementById('p-currency').value = profile.currency || 'تومان';
+  document.getElementById('p-risk').value = profile.risk || 'medium';
+  document.getElementById('p-bio').value = profile.bio || '';
+  renderProfileCard();
+}
+
+/* Income View Logic */
+function loadIncomes() {
+  try {
+    const raw = localStorage.getItem('wealth-incomes-v1');
+    if (raw) {
+      incomes = JSON.parse(raw);
+    } else {
+      incomes = [
+        { id: 'inc-1', title: currentLang === 'fa' ? 'حقوق فروردین ماه' : 'April Salary', amount: 35000000, category: 'حقوق', date: '2026-04-30' },
+        { id: 'inc-2', title: currentLang === 'fa' ? 'سرمایه‌گذاری روی ارز دیجیتال' : 'Crypto Investment', amount: 8400000, category: 'سرمایه‌گذاری', date: '2026-05-15' }
+      ];
+      saveIncomes();
+    }
+  } catch(e) {
+    incomes = [];
+  }
+}
+
+function saveIncomes() {
+  localStorage.setItem('wealth-incomes-v1', JSON.stringify(incomes));
+}
+
+function renderIncome() {
+  loadIncomes();
+  const listContainer = document.getElementById('income-list');
+  const emptyMsg = document.getElementById('incomeEmptyMsg');
+  
+  listContainer.innerHTML = '';
+  
+  if (incomes.length === 0) {
+    emptyMsg.style.display = 'block';
+  } else {
+    emptyMsg.style.display = 'none';
+    
+    incomes.forEach(function(inc) {
+      const item = document.createElement('div');
+      item.style.display = 'flex';
+      item.style.justifyContent = 'space-between';
+      item.style.alignItems = 'center';
+      item.style.padding = '12px 14px';
+      item.style.background = 'var(--surface-2)';
+      item.style.border = '1px solid var(--line)';
+      item.style.borderRadius = '10px';
+      item.style.marginBottom = '8px';
+      
+      let catColor = 'var(--gold)';
+      if (inc.category === 'حقوق') catColor = 'var(--good)';
+      else if (inc.category === 'سرمایه‌گذاری') catColor = 'var(--gold-bright)';
+      else if (inc.category === 'کسب‌وکار') catColor = 'var(--warn)';
+      else if (inc.category === 'هدیه') catColor = 'var(--bad)';
+      
+      item.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <div style="font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+            <span>${inc.title}</span>
+            <span style="font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.06); color: ${catColor}; border: 1px solid rgba(255,255,255,0.08);">${getCategoryLabel(inc.category)}</span>
+          </div>
+          <div class="num" style="font-size: 11px; color: var(--text-muted);">${inc.date || 'نامشخص'}</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <b class="num" style="color: var(--good); font-size: 14px;">${fmt(inc.amount)} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">${translateCurrency(profile.currency || 'تومان')}</span></b>
+          <button class="del-btn" onclick="deleteIncome('${inc.id}')" style="font-size: 13px; opacity: 0.6; cursor: pointer; padding: 4px;">✕</button>
+        </div>
+      `;
+      listContainer.appendChild(item);
+    });
+  }
+  
+  const total = incomes.reduce(function(sum, item) { return sum + item.amount; }, 0);
+  const count = incomes.length;
+  
+  document.getElementById('totalIncomeVal').textContent = fmt(total) + ' ' + translateCurrency(profile.currency || 'تومان');
+  document.getElementById('avgIncomeVal').textContent = count + t('incTransactions');
+  
+  const dateInput = document.getElementById('inc-date');
+  if (dateInput && !dateInput.value) {
+    dateInput.value = new Date().toISOString().slice(0, 10);
+  }
+}
+
+function addIncome() {
+  const titleInput = document.getElementById('inc-title');
+  const amountInput = document.getElementById('inc-amount');
+  const categorySelect = document.getElementById('inc-category');
+  const dateInput = document.getElementById('inc-date');
+  const errMsg = document.getElementById('incErr');
+  
+  const title = titleInput.value.trim();
+  const amount = parseFloat(amountInput.value);
+  const category = categorySelect.value;
+  const date = dateInput.value;
+  
+  if (!title || isNaN(amount) || amount <= 0) {
+    errMsg.style.display = 'block';
+    return;
+  }
+  
+  errMsg.style.display = 'none';
+  
+  const newInc = {
+    id: 'inc-' + Date.now(),
+    title: title,
+    amount: amount,
+    category: category,
+    date: date || new Date().toISOString().slice(0, 10)
+  };
+  
+  incomes.push(newInc);
+  saveIncomes();
+  toast(t('incRegistered'));
+  pushToGist();
+  
+  titleInput.value = '';
+  amountInput.value = '';
+  
+  renderIncome();
+}
+
+function deleteIncome(id) {
+  incomes = incomes.filter(function(inc) { return inc.id !== id; });
+  saveIncomes();
+  toast(t('incDeleted'));
+  pushToGist();
+  renderIncome();
+}
+
+function clearAllIncomes() {
+  if (confirm(t('incClearConfirm'))) {
+    incomes = [];
+    saveIncomes();
+    toast(t('incCleared'));
+    pushToGist();
+    renderIncome();
+  }
+}
 
 const defaultGoals = [
   {id:'silver', name:'نقره', unit:'اونس', current:0, target:100, deadline:'', color:'#9ca3af', history:[]},
@@ -280,6 +1551,8 @@ function loadLocal(){
     const c = localStorage.getItem(CFG_KEY);
     if(c) cfg = JSON.parse(c);
   }catch(e){}
+  loadProfile();
+  loadIncomes();
 }
 function saveLocal(){
   localStorage.setItem(STORE_KEY, JSON.stringify({goals, history, updatedAt: new Date().toISOString()}));
@@ -298,12 +1571,12 @@ function toast(msg){
 function pct(g){ if(!g.target || g.target<=0) return 0; return Math.max(0, Math.min(100, (g.current/g.target)*100)); }
 function overallPct(){ return goals.length ? goals.reduce((s,g)=>s+pct(g),0)/goals.length : 0; }
 function relTime(iso){
-  if(!iso) return 'هنوز به‌روزرسانی نشده';
+  if(!iso) return t('gNotUpdatedYet');
   const diff = Date.now() - new Date(iso).getTime();
   const days = Math.floor(diff/86400000);
-  if(days<=0) return 'امروز به‌روز شد';
-  if(days===1) return 'دیروز به‌روز شد';
-  return days + ' روز پیش به‌روز شد';
+  if(days<=0) return t('gUpdatedToday');
+  if(days===1) return t('gUpdatedYesterday');
+  return days + t('gUpdatedDaysAgo');
 }
 
 function recordSnapshot(){
@@ -316,7 +1589,7 @@ function gaugeSVG(p, color){
   const r = 40, c = 2*Math.PI*r;
   const offset = c - (p/100)*c;
   return '<svg class="gauge" viewBox="0 0 92 92">' +
-    '<circle cx="46" cy="46" r="'+r+'" fill="none" stroke="#2c333d" stroke-width="7"/>' +
+    '<circle cx="46" cy="46" r="'+r+'" fill="none" stroke="var(--gauge-bg)" stroke-width="7"/>' +
     '<circle cx="46" cy="46" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+offset+'" transform="rotate(-90 46 46)" style="transition:stroke-dashoffset .6s ease"/>' +
     '<text x="46" y="51" text-anchor="middle" class="gauge-pct-text">'+Math.round(p)+'%</text></svg>';
 }
@@ -349,17 +1622,17 @@ function render(){
     card.style.animationDelay = (idx*0.05)+'s';
     card.style.setProperty('--accent', g.color);
     card.innerHTML =
-      '<div class="card-top"><div class="card-title">'+g.name+' '+trendHTML(g)+'</div>' +
-      '<button class="del-btn" onclick="delGoal('+idx+')">حذف ✕</button></div>' +
+      '<div class="card-top"><div class="card-title">'+getGoalName(g)+' '+trendHTML(g)+'</div>' +
+      '<button class="del-btn" onclick="delGoal('+idx+')">'+t('gDelete')+'</button></div>' +
       '<div class="gauge-wrap">'+gaugeSVG(p, g.color)+
       '<div class="gauge-info">' +
-        '<div class="row"><span>فعلی</span><b>'+fmt(g.current)+'</b></div>' +
-        '<div class="row"><span>هدف</span><b>'+fmt(g.target)+' '+g.unit+'</b></div>' +
-        '<div class="row"><span>باقی‌مانده</span><b>'+fmt(Math.max(0,g.target-g.current))+'</b></div>' +
+        '<div class="row"><span>'+t('gCurrent')+'</span><b>'+fmt(g.current)+'</b></div>' +
+        '<div class="row"><span>'+t('gTarget')+'</span><b>'+fmt(g.target)+' '+translateUnit(g.unit)+'</b></div>' +
+        '<div class="row"><span>'+t('gRemaining')+'</span><b>'+fmt(Math.max(0,g.target-g.current))+'</b></div>' +
       '</div></div>' +
       '<div class="updated-at">'+relTime(g.updatedAt)+'</div>' +
-      (g.deadline ? '<div class="deadline '+(dl!==null && dl<30?'late':'')+'">📅 '+g.deadline+' '+(dl!==null ? (dl>=0?'('+dl+' روز مانده)':'(گذشته)') : '')+'</div>' : '') +
-      '<div class="edit-row"><input type="number" inputmode="decimal" placeholder="مقدار جدید" id="upd-'+idx+'"><button onclick="updateCurrent('+idx+')">ثبت</button></div>';
+      (g.deadline ? '<div class="deadline '+(dl!==null && dl<30?'late':'')+'">📅 '+g.deadline+' '+(dl!==null ? (dl>=0?'('+dl+t('gDaysRemaining')+')':'('+t('gDeadlinePassed')+')') : '')+'</div>' : '') +
+      '<div class="edit-row"><input type="number" inputmode="decimal" placeholder="'+t('gAddValuePlaceholder')+'" id="upd-'+idx+'"><button onclick="updateCurrent('+idx+')">'+t('gAddValueBtn')+'</button></div>';
     grid.appendChild(card);
   });
 
@@ -381,7 +1654,7 @@ function renderChart(){
   const wrap = document.getElementById('chartWrap');
   const axis = document.getElementById('chartAxis');
   if(history.length<2){
-    wrap.innerHTML = '<div style="font-size:11px;color:var(--text-muted);padding-top:44px;text-align:center;">با چند بار به‌روزرسانی، نمودار روند اینجا شکل می‌گیره</div>';
+    wrap.innerHTML = '<div style="font-size:11px;color:var(--text-muted);padding-top:44px;text-align:center;">'+t('chartEmpty')+'</div>';
     axis.innerHTML = '';
     return;
   }
@@ -398,21 +1671,21 @@ function renderChart(){
 
   const grid = [0,25,50,75,100].map(function(g){
     const y = yOf(g).toFixed(1);
-    return '<line x1="'+padX+'" y1="'+y+'" x2="'+(w-padX)+'" y2="'+y+'" stroke="#233040" stroke-width="1" stroke-dasharray="3,4"/>' +
-           '<text x="2" y="'+(Number(y)-2)+'" font-size="8" fill="#7c8ba1" font-family="JetBrains Mono, monospace">'+g+'%</text>';
+    return '<line x1="'+padX+'" y1="'+y+'" x2="'+(w-padX)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1" stroke-dasharray="3,4"/>' +
+           '<text x="2" y="'+(Number(y)-2)+'" font-size="8" fill="var(--text-muted)" font-family="\'Plus Jakarta Sans\', sans-serif">'+g+'%</text>';
   }).join('');
 
   const lastX = padX+(pts.length-1)*stepX, lastY = yOf(pts[pts.length-1].avgPct);
-  const dot = '<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="3.5" fill="#67e8f9"/><circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="7" fill="#67e8f9" opacity="0.25"/>';
+  const dot = '<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="3.5" fill="var(--gold-bright)"/><circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="7" fill="var(--gold-bright)" opacity="0.25"/>';
 
   wrap.innerHTML =
     '<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" preserveAspectRatio="none">' +
     '<defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0%" stop-color="#22d3ee" stop-opacity="0.30"/>' +
-    '<stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>' +
+    '<stop offset="0%" stop-color="var(--gold)" stop-opacity="0.30"/>' +
+    '<stop offset="100%" stop-color="var(--gold)" stop-opacity="0"/></linearGradient></defs>' +
     grid +
     '<path d="'+areaPath+'" fill="url(#areaGrad)"/>' +
-    '<path d="'+path+'" fill="none" stroke="#67e8f9" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>' +
+    '<path d="'+path+'" fill="none" stroke="var(--gold-bright)" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>' +
     dot +
     '</svg>';
 
@@ -425,10 +1698,10 @@ function renderSyncStatus(){
   const txt = document.getElementById('syncText');
   if(cfg.token && cfg.gistId){
     dot.classList.add('on');
-    txt.textContent = cfg.lastSync ? ('همگام: '+relTime(cfg.lastSync)) : 'متصل، هنوز سینک نشده';
+    txt.textContent = cfg.lastSync ? (t('syncStatusOn') + relTime(cfg.lastSync)) : t('syncStatusNot');
   } else {
     dot.classList.remove('on');
-    txt.textContent = 'همگام‌سازی غیرفعال';
+    txt.textContent = t('syncStatusOff');
   }
 }
 
@@ -437,17 +1710,20 @@ function updateCurrent(idx){
   const val = parseFloat(input.value);
   if(isNaN(val)) return;
   const g = goals[idx];
-  g.current = val;
+  const newVal = g.current + val;
+  g.current = newVal;
   g.updatedAt = new Date().toISOString();
   g.history = g.history || [];
   const today = new Date().toISOString().slice(0,10);
   const last = g.history[g.history.length-1];
-  if(last && last.ts.slice(0,10)===today){ last.value = val; }
-  else { g.history.push({ts:g.updatedAt, value: val}); }
+  if(last && last.ts.slice(0,10)===today){ last.value = newVal; }
+  else { g.history.push({ts:g.updatedAt, value: newVal}); }
   if(g.history.length>60) g.history = g.history.slice(-60);
   recordSnapshot();
   saveLocal(); render();
   pushToGist();
+  input.value = '';
+  toast(t('gAddValueToast'));
 }
 
 function delGoal(idx){
@@ -470,18 +1746,24 @@ function addGoal(){
   recordSnapshot();
   saveLocal(); render();
   pushToGist();
-  ['f-name','f-unit','f-current','f-target','f-deadline'].forEach(function(id){ document.getElementById(id).value=''; });
+  ['f-name','f-current','f-target','f-deadline'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('f-unit').value = 'تومان';
 }
 
 loadLocal();
+applyLanguage();
 if(history.length===0 && goals.some(function(g){return g.current>0;})) recordSnapshot();
+applyTheme(currentTheme);
+renderProfile();
+renderIncome();
 render();
+startSubtitleRotation();
 
 const FILE_NAME = 'goals-data.json';
 function ghHeaders(){ return {'Authorization':'token '+cfg.token, 'Accept':'application/vnd.github+json'}; }
 
 function createGist(){
-  const payload = {goals:goals, history:history, updatedAt:new Date().toISOString()};
+  const payload = {goals:goals, history:history, profile:profile, incomes:incomes, updatedAt:new Date().toISOString()};
   const files = {}; files[FILE_NAME] = {content: JSON.stringify(payload)};
   return fetch('https://api.github.com/gists', {
     method:'POST', headers: ghHeaders(),
@@ -494,7 +1776,7 @@ function createGist(){
 
 function pushToGist(){
   if(!cfg.token || !cfg.gistId) return Promise.resolve();
-  const payload = {goals:goals, history:history, updatedAt:new Date().toISOString()};
+  const payload = {goals:goals, history:history, profile:profile, incomes:incomes, updatedAt:new Date().toISOString()};
   const files = {}; files[FILE_NAME] = {content: JSON.stringify(payload)};
   return fetch('https://api.github.com/gists/'+cfg.gistId, {
     method:'PATCH', headers: ghHeaders(),
@@ -503,7 +1785,7 @@ function pushToGist(){
     if(!res.ok) throw new Error(String(res.status));
     cfg.lastSync = new Date().toISOString();
     saveCfg(); renderSyncStatus();
-  }).catch(function(e){ toast('همگام‌سازی ناموفق بود — بعداً دوباره امتحان می‌کنیم'); });
+  }).catch(function(e){ toast(t('syncFailedToast')); });
 }
 
 function pullFromGist(showToast){
@@ -524,19 +1806,30 @@ function pullFromGist(showToast){
         if(!local || !local.updatedAt || new Date(remote.updatedAt) > new Date(local.updatedAt)){
           goals = remote.goals || goals;
           history = remote.history || history;
+          if (remote.profile) {
+            profile = remote.profile;
+            localStorage.setItem('wealth-profile-v1', JSON.stringify(profile));
+          }
+          if (remote.incomes) {
+            incomes = remote.incomes;
+            localStorage.setItem('wealth-incomes-v1', JSON.stringify(incomes));
+          }
           saveLocal(); render();
-          if(showToast) toast('داده‌ها از حساب گیت‌هابت به‌روز شد');
+          if (currentView === 'income') renderIncome();
+          if (currentView === 'profile') renderProfile();
+          if(showToast) toast(t('syncPullSuccess'));
         } else {
-          pushToGist().then(function(){ if(showToast) toast('همگام‌سازی انجام شد'); });
+          pushToGist().then(function(){ if(showToast) toast(t('syncCompleted')); });
         }
       }
       cfg.lastSync = new Date().toISOString();
       saveCfg(); renderSyncStatus();
     })
-    .catch(function(e){ if(showToast) toast('اتصال برقرار نشد — توکن یا Gist ID رو چک کن'); })
+    .catch(function(e){ if(showToast) toast(t('syncConnErr')); })
     .finally(function(){ btn.classList.remove('spinning'); });
 }
 
+document.getElementById('themeBtn').addEventListener('click', toggleTheme);
 document.getElementById('syncBtn').addEventListener('click', function(){ pullFromGist(true); });
 
 const modalBg = document.getElementById('modalBg');
@@ -551,19 +1844,19 @@ modalBg.addEventListener('click', function(e){ if(e.target===modalBg) modalBg.cl
 document.getElementById('connectBtn').addEventListener('click', function(){
   const token = document.getElementById('cfgToken').value.trim();
   let gistId = document.getElementById('cfgGistId').value.trim();
-  if(!token){ toast('توکن رو وارد کن'); return; }
+  if(!token){ toast(t('modalTokenWarning')); return; }
   cfg.token = token;
   const proceed = function(id){
     cfg.gistId = id;
     saveCfg();
     modalBg.classList.remove('open');
-    toast('متصل شد ✓');
+    toast(t('modalConnected'));
     pullFromGist(false);
     renderSyncStatus();
   };
   if(!gistId){
-    toast('در حال ساخت Gist جدید...');
-    createGist().then(proceed).catch(function(){ toast('اتصال ناموفق بود — توکن رو بررسی کن (باید دسترسی gist داشته باشه)'); });
+    toast(t('modalCreatingGist'));
+    createGist().then(proceed).catch(function(){ toast(t('modalConnFailed')); });
   } else {
     proceed(gistId);
   }
@@ -571,7 +1864,7 @@ document.getElementById('connectBtn').addEventListener('click', function(){
 document.getElementById('disconnectBtn').addEventListener('click', function(){
   cfg = {token:'', gistId:''};
   saveCfg(); renderSyncStatus(); modalBg.classList.remove('open');
-  toast('همگام‌سازی قطع شد');
+  toast(t('modalDisconnectToast'));
 });
 
 if(cfg.token && cfg.gistId){ pullFromGist(false); }

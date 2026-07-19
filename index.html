@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12151a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="اهداف">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>داشبورد اهداف مالی</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151a;
+    --bg-2:#181c23;
+    --surface:#1e232b;
+    --surface-2:#242a33;
+    --line:#2c333d;
+    --gold:#c9a227;
+    --gold-bright:#e8c65a;
+    --silver:#9ca3af;
+    --text:#e8e6e1;
+    --text-muted:#8b909a;
+    --good:#4ade80;
+    --warn:#f59e0b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #1b2129 0%, transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Vazirmatn',sans-serif;
+    padding:calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 60px);
+  }
+  .num{font-family:'JetBrains Mono',monospace;}
+
+  header{
+    max-width:1100px;margin:0 auto 28px;
+    display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+    flex-wrap:wrap;gap:12px;
+  }
+  header h1{
+    font-size:20px;font-weight:800;margin:0;letter-spacing:.2px;
+  }
+  header p{margin:4px 0 0;color:var(--text-muted);font-size:12px;}
+  .overall{text-align:left;}
+  .overall .val{font-size:28px;font-weight:700;color:var(--gold-bright);}
+  .overall .lbl{font-size:11px;color:var(--text-muted);}
+
+  .grid{
+    max-width:1100px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:16px;
+  }
+  .card{
+    background:linear-gradient(180deg,var(--surface) 0%, var(--surface-2) 100%);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 16px 14px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:'';position:absolute;inset:0 0 auto 0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent,var(--gold)),transparent);
+    opacity:.7;
+  }
+  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .card-title{font-weight:700;font-size:14px;}
+  .del-btn{
+    background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;
+    opacity:.5;padding:4px;
+  }
+  .del-btn:hover{opacity:1;color:#f87171;}
+
+  .gauge-wrap{display:flex;align-items:center;gap:14px;}
+  svg.gauge{width:100px;height:100px;flex-shrink:0;}
+  .gauge-pct-text{
+    fill:var(--text);
+    font-family:'JetBrains Mono',monospace;
+    font-size:19px;font-weight:700;
+  }
+  .gauge-info{flex:1;min-width:0;}
+  .row{display:flex;justify-content:space-between;font-size:12px;margin:3px 0;color:var(--text-muted);}
+  .row b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:500;}
+  .deadline{margin-top:8px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px;}
+  .deadline.late{color:var(--warn);}
+
+  .edit-row{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;gap:6px;}
+  .edit-row input{
+    width:100%;background:var(--bg-2);border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:8px;font-family:'JetBrains Mono',monospace;font-size:13px;
+  }
+  .edit-row button{
+    background:var(--gold);color:#1a1a1a;border:none;border-radius:8px;padding:0 14px;
+    font-weight:700;cursor:pointer;font-size:12px;
+  }
+  .edit-row button:hover{background:var(--gold-bright);}
+
+  .add-card{
+    max-width:1100px;margin:20px auto 0;
+    background:var(--surface);border:1px dashed var(--line);border-radius:14px;
+    padding:16px;
+  }
+  .add-card summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--text-muted);}
+  .add-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px;}
+  .add-grid input{
+    background:var(--bg-2);border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:9px 10px;font-family:'Vazirmatn',sans-serif;font-size:13px;
+    width:100%;
+  }
+  .add-grid label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px;}
+  .add-submit{
+    margin-top:12px;background:var(--gold);color:#1a1a1a;border:none;border-radius:8px;
+    padding:10px 18px;font-weight:700;cursor:pointer;font-size:13px;
+  }
+  .add-submit:hover{background:var(--gold-bright);}
+
+  .empty{max-width:1100px;margin:60px auto;text-align:center;color:var(--text-muted);font-size:13px;}
+  .footer-note{max-width:1100px;margin:20px auto 0;text-align:center;color:var(--text-muted);font-size:11px;}
+
+  .install-banner{
+    max-width:1100px;margin:0 auto 18px;
+    background:linear-gradient(90deg, rgba(201,162,39,.12), rgba(201,162,39,.03));
+    border:1px solid rgba(201,162,39,.35);
+    border-radius:12px;padding:10px 14px;font-size:12px;color:var(--gold-bright);
+    display:none;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .install-banner button{
+    background:var(--gold);color:#1a1a1a;border:none;border-radius:8px;padding:7px 14px;
+    font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="install-banner" id="installBanner">
+  <span>این صفحه رو می‌تونی مثل یه اپ روی صفحه اصلی گوشیت نصب کنی</span>
+  <button id="installBtn">نصب</button>
+</div>
+
+<header>
+  <div>
+    <h1>داشبورد اهداف مالی</h1>
+    <p>سرمایه، طلا، نقره، کریپتو و خودرو — همه در یک صفحه</p>
+  </div>
+  <div class="overall">
+    <div class="val num" id="overallPct">—</div>
+    <div class="lbl">میانگین پیشرفت کل اهداف</div>
+  </div>
+</header>
+
+<div class="grid" id="grid"></div>
+<div class="empty" id="emptyMsg" style="display:none">هنوز هدفی ثبت نکردی. از فرم پایین یکی اضافه کن.</div>
+
+<details class="add-card">
+  <summary>+ افزودن هدف جدید</summary>
+  <div class="add-grid">
+    <div><label>عنوان هدف</label><input id="f-name" placeholder="مثلاً طلای آب‌شده"></div>
+    <div><label>واحد</label><input id="f-unit" placeholder="گرم / دلار / عدد"></div>
+    <div><label>مقدار فعلی</label><input id="f-current" type="number" placeholder="0"></div>
+    <div><label>مقدار هدف</label><input id="f-target" type="number" placeholder="100"></div>
+    <div><label>سررسید</label><input id="f-deadline" type="date"></div>
+    <div><label>رنگ</label><input id="f-color" type="color" value="#c9a227" style="padding:2px;height:38px;"></div>
+  </div>
+  <button class="add-submit" onclick="addGoal()">ثبت هدف</button>
+</details>
+
+<div class="footer-note">داده‌ها فقط روی همین گوشی/مرورگر ذخیره می‌شن.</div>
+
+<script>
+const STORE_KEY = 'wealth-goals-v1';
+let goals = [];
+
+const defaultGoals = [
+  {id:'silver', name:'نقره', unit:'اونس', current:0, target:100, deadline:'', color:'#9ca3af'},
+  {id:'gold', name:'طلا', unit:'گرم', current:0, target:200, deadline:'', color:'#c9a227'},
+  {id:'crypto', name:'کریپتو', unit:'دلار', current:0, target:20000, deadline:'', color:'#60a5fa'},
+  {id:'cash', name:'دلار نقد', unit:'دلار', current:0, target:15000, deadline:'', color:'#4ade80'},
+  {id:'bmw', name:'بی‌ام‌و M550i', unit:'AED', current:0, target:180000, deadline:'2027-01-17', color:'#e8c65a'},
+];
+
+function loadGoals(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    goals = raw ? JSON.parse(raw) : defaultGoals;
+  }catch(e){
+    goals = defaultGoals;
+  }
+  render();
+}
+
+function saveGoals(){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(goals));
+  }catch(e){
+    console.error('storage failed', e);
+  }
+}
+
+function pct(g){
+  if(!g.target || g.target<=0) return 0;
+  return Math.max(0, Math.min(100, (g.current/g.target)*100));
+}
+
+function gaugeSVG(p, color){
+  const r = 42, c = 2*Math.PI*r;
+  const offset = c - (p/100)*c;
+  return `
+  <svg class="gauge" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="#2c333d" stroke-width="8"/>
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="8"
+      stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"
+      transform="rotate(-90 50 50)" style="transition:stroke-dashoffset .6s ease"/>
+    <text x="50" y="55" text-anchor="middle" class="gauge-pct-text">${Math.round(p)}%</text>
+  </svg>`;
+}
+
+function daysLeft(deadline){
+  if(!deadline) return null;
+  const d = new Date(deadline);
+  const now = new Date();
+  return Math.ceil((d-now)/(1000*60*60*24));
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('emptyMsg');
+  grid.innerHTML = '';
+  empty.style.display = goals.length===0 ? 'block' : 'none';
+
+  let totalPct = 0;
+  goals.forEach((g, idx)=>{
+    const p = pct(g);
+    totalPct += p;
+    const dl = daysLeft(g.deadline);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.setProperty('--accent', g.color);
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-title">${g.name}</div>
+        <button class="del-btn" onclick="delGoal(${idx})">حذف ✕</button>
+      </div>
+      <div class="gauge-wrap">
+        ${gaugeSVG(p, g.color)}
+        <div class="gauge-info">
+          <div class="row"><span>فعلی</span><b>${fmt(g.current)}</b></div>
+          <div class="row"><span>هدف</span><b>${fmt(g.target)} ${g.unit}</b></div>
+          <div class="row"><span>باقی‌مانده</span><b>${fmt(Math.max(0,g.target-g.current))}</b></div>
+        </div>
+      </div>
+      ${g.deadline ? `<div class="deadline ${dl!==null && dl<30 ? 'late':''}">📅 سررسید: ${g.deadline} ${dl!==null ? (dl>=0 ? `(${dl} روز مانده)` : '(گذشته)') : ''}</div>` : ''}
+      <div class="edit-row">
+        <input type="number" inputmode="decimal" placeholder="به‌روزرسانی مقدار فعلی" id="upd-${idx}">
+        <button onclick="updateCurrent(${idx})">ثبت</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('overallPct').textContent =
+    goals.length ? Math.round(totalPct/goals.length) + '%' : '—';
+}
+
+function fmt(n){ return Number(n).toLocaleString('en-US'); }
+
+function updateCurrent(idx){
+  const input = document.getElementById('upd-'+idx);
+  const val = parseFloat(input.value);
+  if(isNaN(val)) return;
+  goals[idx].current = val;
+  saveGoals();
+  render();
+}
+
+function delGoal(idx){
+  goals.splice(idx,1);
+  saveGoals();
+  render();
+}
+
+function addGoal(){
+  const name = document.getElementById('f-name').value.trim();
+  const unit = document.getElementById('f-unit').value.trim();
+  const current = parseFloat(document.getElementById('f-current').value) || 0;
+  const target = parseFloat(document.getElementById('f-target').value) || 0;
+  const deadline = document.getElementById('f-deadline').value;
+  const color = document.getElementById('f-color').value;
+  if(!name || !target){ alert('لطفاً عنوان و مقدار هدف را وارد کن'); return; }
+  goals.push({id:Date.now().toString(), name, unit, current, target, deadline, color});
+  saveGoals();
+  render();
+  document.getElementById('f-name').value='';
+  document.getElementById('f-unit').value='';
+  document.getElementById('f-current').value='';
+  document.getElementById('f-target').value='';
+  document.getElementById('f-deadline').value='';
+}
+
+loadGoals();
+
+// --- PWA install prompt ---
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+document.getElementById('installBtn').addEventListener('click', async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').style.display = 'none';
+});
+window.addEventListener('appinstalled', ()=>{
+  document.getElementById('installBanner').style.display = 'none';
+});
+
+// --- Service worker registration ---
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(err=>console.error('SW failed', err));
+  });
+}
+</script>
+</body>
+</html>

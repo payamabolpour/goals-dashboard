@@ -15,7 +15,6 @@
 <style>
   :root{
     --bg:#12151a;
-    --bg-2:#181c23;
     --surface:#1e232b;
     --surface-2:#242a33;
     --line:#2c333d;
@@ -25,6 +24,7 @@
     --text:#e8e6e1;
     --text-muted:#8b909a;
     --good:#4ade80;
+    --bad:#f87171;
     --warn:#f59e0b;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -36,67 +36,78 @@
       var(--bg);
     color:var(--text);
     font-family:'Vazirmatn',sans-serif;
-    padding:calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 60px);
+    padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 60px);
   }
   .num{font-family:'JetBrains Mono',monospace;}
+  ::selection{background:rgba(201,162,39,.3);}
 
   header{
-    max-width:1100px;margin:0 auto 28px;
-    display:flex;justify-content:space-between;align-items:flex-end;
-    border-bottom:1px solid var(--line);
-    padding-bottom:18px;
-    flex-wrap:wrap;gap:12px;
+    max-width:1100px;margin:0 auto 18px;
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;flex-wrap:wrap;
   }
-  header h1{
-    font-size:20px;font-weight:800;margin:0;letter-spacing:.2px;
+  header h1{font-size:19px;font-weight:800;margin:0;letter-spacing:.2px;}
+  header p{margin:3px 0 0;color:var(--text-muted);font-size:11.5px;}
+  .head-actions{display:flex;gap:8px;align-items:center;}
+  .icon-btn{
+    width:36px;height:36px;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface);color:var(--text-muted);display:flex;align-items:center;
+    justify-content:center;cursor:pointer;font-size:16px;transition:.15s;
   }
-  header p{margin:4px 0 0;color:var(--text-muted);font-size:12px;}
-  .overall{text-align:left;}
-  .overall .val{font-size:28px;font-weight:700;color:var(--gold-bright);}
-  .overall .lbl{font-size:11px;color:var(--text-muted);}
+  .icon-btn:hover{color:var(--gold-bright);border-color:var(--gold);}
+  .icon-btn.spinning{animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .overview{
+    max-width:1100px;margin:0 auto 18px;
+    background:linear-gradient(180deg,var(--surface) 0%, var(--surface-2) 100%);
+    border:1px solid var(--line);border-radius:16px;padding:18px 18px 8px;
+  }
+  .overview-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;}
+  .overview .val{font-size:32px;font-weight:800;color:var(--gold-bright);line-height:1;}
+  .overview .lbl{font-size:11px;color:var(--text-muted);margin-top:4px;}
+  .sync-status{font-size:10.5px;color:var(--text-muted);display:flex;align-items:center;gap:5px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);}
+  .dot.on{background:var(--good);}
+  #chartWrap{width:100%;height:64px;margin-top:6px;}
 
   .grid{
     max-width:1100px;margin:0 auto;
     display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:16px;
+    gap:14px;
   }
   .card{
     background:linear-gradient(180deg,var(--surface) 0%, var(--surface-2) 100%);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:18px 16px 14px;
-    position:relative;
-    overflow:hidden;
+    border:1px solid var(--line);border-radius:14px;padding:16px 15px 12px;
+    position:relative;overflow:hidden;
+    opacity:0;transform:translateY(6px);animation:cardIn .4s ease forwards;
   }
+  @keyframes cardIn{to{opacity:1;transform:none;}}
   .card::before{
     content:'';position:absolute;inset:0 0 auto 0;height:2px;
-    background:linear-gradient(90deg,transparent,var(--accent,var(--gold)),transparent);
-    opacity:.7;
+    background:linear-gradient(90deg,transparent,var(--accent,var(--gold)),transparent);opacity:.7;
   }
-  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-  .card-title{font-weight:700;font-size:14px;}
-  .del-btn{
-    background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;
-    opacity:.5;padding:4px;
-  }
-  .del-btn:hover{opacity:1;color:#f87171;}
+  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .card-title{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px;}
+  .trend{font-size:11px;font-family:'JetBrains Mono',monospace;}
+  .trend.up{color:var(--good);}
+  .trend.down{color:var(--bad);}
+  .del-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;opacity:.45;padding:4px;}
+  .del-btn:hover{opacity:1;color:var(--bad);}
 
-  .gauge-wrap{display:flex;align-items:center;gap:14px;}
-  svg.gauge{width:100px;height:100px;flex-shrink:0;}
-  .gauge-pct-text{
-    fill:var(--text);
-    font-family:'JetBrains Mono',monospace;
-    font-size:19px;font-weight:700;
-  }
+  .gauge-wrap{display:flex;align-items:center;gap:12px;}
+  svg.gauge{width:92px;height:92px;flex-shrink:0;}
+  .gauge-pct-text{fill:var(--text);font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;}
   .gauge-info{flex:1;min-width:0;}
-  .row{display:flex;justify-content:space-between;font-size:12px;margin:3px 0;color:var(--text-muted);}
+  .row{display:flex;justify-content:space-between;font-size:11.5px;margin:3px 0;color:var(--text-muted);}
   .row b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:500;}
-  .deadline{margin-top:8px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px;}
+  .updated-at{margin-top:6px;font-size:10.5px;color:var(--text-muted);}
+  .deadline{margin-top:4px;font-size:10.5px;color:var(--text-muted);}
   .deadline.late{color:var(--warn);}
 
-  .edit-row{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;gap:6px;}
+  .edit-row{margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);display:flex;gap:6px;}
   .edit-row input{
-    width:100%;background:var(--bg-2);border:1px solid var(--line);color:var(--text);
+    width:100%;background:#181c23;border:1px solid var(--line);color:var(--text);
     border-radius:8px;padding:8px;font-family:'JetBrains Mono',monospace;font-size:13px;
   }
   .edit-row button{
@@ -106,16 +117,14 @@
   .edit-row button:hover{background:var(--gold-bright);}
 
   .add-card{
-    max-width:1100px;margin:20px auto 0;
-    background:var(--surface);border:1px dashed var(--line);border-radius:14px;
-    padding:16px;
+    max-width:1100px;margin:18px auto 0;background:var(--surface);
+    border:1px dashed var(--line);border-radius:14px;padding:14px 16px;
   }
   .add-card summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--text-muted);}
   .add-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px;}
   .add-grid input{
-    background:var(--bg-2);border:1px solid var(--line);color:var(--text);
-    border-radius:8px;padding:9px 10px;font-family:'Vazirmatn',sans-serif;font-size:13px;
-    width:100%;
+    background:#181c23;border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:9px 10px;font-family:'Vazirmatn',sans-serif;font-size:13px;width:100%;
   }
   .add-grid label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px;}
   .add-submit{
@@ -123,21 +132,52 @@
     padding:10px 18px;font-weight:700;cursor:pointer;font-size:13px;
   }
   .add-submit:hover{background:var(--gold-bright);}
+  .err-msg{color:var(--bad);font-size:11.5px;margin-top:8px;display:none;}
 
   .empty{max-width:1100px;margin:60px auto;text-align:center;color:var(--text-muted);font-size:13px;}
   .footer-note{max-width:1100px;margin:20px auto 0;text-align:center;color:var(--text-muted);font-size:11px;}
 
   .install-banner{
-    max-width:1100px;margin:0 auto 18px;
+    max-width:1100px;margin:0 auto 14px;
     background:linear-gradient(90deg, rgba(201,162,39,.12), rgba(201,162,39,.03));
-    border:1px solid rgba(201,162,39,.35);
-    border-radius:12px;padding:10px 14px;font-size:12px;color:var(--gold-bright);
-    display:none;align-items:center;justify-content:space-between;gap:10px;
+    border:1px solid rgba(201,162,39,.35);border-radius:12px;padding:10px 14px;font-size:12px;
+    color:var(--gold-bright);display:none;align-items:center;justify-content:space-between;gap:10px;
   }
-  .install-banner button{
-    background:var(--gold);color:#1a1a1a;border:none;border-radius:8px;padding:7px 14px;
-    font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;
+  .install-banner button{background:var(--gold);color:#1a1a1a;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(2px);
+    display:none;align-items:center;justify-content:center;z-index:50;padding:20px;
   }
+  .modal-bg.open{display:flex;}
+  .modal{
+    background:var(--surface-2);border:1px solid var(--line);border-radius:16px;
+    padding:20px;max-width:400px;width:100%;position:relative;
+  }
+  .modal h2{margin:0 0 4px;font-size:16px;}
+  .modal p{margin:0 0 14px;font-size:12px;color:var(--text-muted);line-height:1.9;}
+  .modal label{font-size:11.5px;color:var(--text-muted);display:block;margin:10px 0 4px;}
+  .modal input{
+    width:100%;background:#181c23;border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:9px 10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;
+  }
+  .modal-actions{display:flex;gap:8px;margin-top:16px;}
+  .modal-actions button{
+    flex:1;border:none;border-radius:9px;padding:10px;font-weight:700;font-size:12.5px;cursor:pointer;
+  }
+  .btn-primary{background:var(--gold);color:#1a1a1a;}
+  .btn-primary:hover{background:var(--gold-bright);}
+  .btn-secondary{background:var(--bg);color:var(--text-muted);border:1px solid var(--line) !important;}
+  .btn-secondary:hover{color:var(--bad);}
+  .modal-close{position:absolute;left:16px;top:14px;background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;}
+
+  .toast-wrap{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 16px);left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:60;pointer-events:none;}
+  .toast{
+    background:#20262f;border:1px solid var(--line);color:var(--text);
+    padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.35);
+    opacity:0;transform:translateY(8px);transition:.25s;
+  }
+  .toast.show{opacity:1;transform:none;}
 </style>
 </head>
 <body>
@@ -150,13 +190,24 @@
 <header>
   <div>
     <h1>داشبورد اهداف مالی</h1>
-    <p>سرمایه، طلا، نقره، کریپتو و خودرو — همه در یک صفحه</p>
+    <p>سرمایه، طلا، نقره، کریپتو و خودرو</p>
   </div>
-  <div class="overall">
-    <div class="val num" id="overallPct">—</div>
-    <div class="lbl">میانگین پیشرفت کل اهداف</div>
+  <div class="head-actions">
+    <button class="icon-btn" id="syncBtn" title="همگام‌سازی">⟳</button>
+    <button class="icon-btn" id="settingsBtn" title="تنظیمات همگام‌سازی">⚙</button>
   </div>
 </header>
+
+<div class="overview">
+  <div class="overview-top">
+    <div>
+      <div class="val num" id="overallPct">—</div>
+      <div class="lbl">میانگین پیشرفت کل اهداف</div>
+    </div>
+    <div class="sync-status"><span class="dot" id="syncDot"></span><span id="syncText">همگام‌سازی غیرفعال</span></div>
+  </div>
+  <div id="chartWrap"></div>
+</div>
 
 <div class="grid" id="grid"></div>
 <div class="empty" id="emptyMsg" style="display:none">هنوز هدفی ثبت نکردی. از فرم پایین یکی اضافه کن.</div>
@@ -171,64 +222,117 @@
     <div><label>سررسید</label><input id="f-deadline" type="date"></div>
     <div><label>رنگ</label><input id="f-color" type="color" value="#c9a227" style="padding:2px;height:38px;"></div>
   </div>
+  <div class="err-msg" id="addErr">لطفاً عنوان و مقدار هدف را وارد کن</div>
   <button class="add-submit" onclick="addGoal()">ثبت هدف</button>
 </details>
 
-<div class="footer-note">داده‌ها فقط روی همین گوشی/مرورگر ذخیره می‌شن.</div>
+<div class="footer-note">داده‌ها روی همین گوشی ذخیره می‌شن؛ اگه همگام‌سازی رو فعال کنی، بین دستگاه‌هات هم سینک می‌شه.</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2>همگام‌سازی بین دستگاه‌ها</h2>
+    <p>
+      داده‌هات از طریق یه Gist خصوصی توی گیت‌هاب خودت ذخیره می‌شه (رایگان و فقط برای خودت).
+      برای ساختنش: گیت‌هاب → عکس پروفایل → Settings → Developer settings →
+      Personal access tokens → Tokens (classic) → Generate new token،
+      فقط دسترسی <b>gist</b> رو تیک بزن و بسازش.
+    </p>
+    <label>GitHub Personal Access Token</label>
+    <input id="cfgToken" type="password" placeholder="ghp_xxxxxxxxxxxx">
+    <label>Gist ID (اگه قبلاً ساختی — وگرنه خالی بذار)</label>
+    <input id="cfgGistId" type="text" placeholder="خالی = ساخت خودکار">
+    <div class="modal-actions">
+      <button class="btn-secondary" id="disconnectBtn">قطع اتصال</button>
+      <button class="btn-primary" id="connectBtn">اتصال و همگام‌سازی</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-const STORE_KEY = 'wealth-goals-v1';
+const STORE_KEY = 'wealth-goals-v2';
+const CFG_KEY = 'wealth-sync-cfg';
 let goals = [];
+let history = [];
+let cfg = { token:'', gistId:'' };
 
 const defaultGoals = [
-  {id:'silver', name:'نقره', unit:'اونس', current:0, target:100, deadline:'', color:'#9ca3af'},
-  {id:'gold', name:'طلا', unit:'گرم', current:0, target:200, deadline:'', color:'#c9a227'},
-  {id:'crypto', name:'کریپتو', unit:'دلار', current:0, target:20000, deadline:'', color:'#60a5fa'},
-  {id:'cash', name:'دلار نقد', unit:'دلار', current:0, target:15000, deadline:'', color:'#4ade80'},
-  {id:'bmw', name:'بی‌ام‌و M550i', unit:'AED', current:0, target:180000, deadline:'2027-01-17', color:'#e8c65a'},
+  {id:'silver', name:'نقره', unit:'اونس', current:0, target:100, deadline:'', color:'#9ca3af', history:[]},
+  {id:'gold', name:'طلا', unit:'گرم', current:0, target:200, deadline:'', color:'#c9a227', history:[]},
+  {id:'crypto', name:'کریپتو', unit:'دلار', current:0, target:20000, deadline:'', color:'#60a5fa', history:[]},
+  {id:'cash', name:'دلار نقد', unit:'دلار', current:0, target:15000, deadline:'', color:'#4ade80', history:[]},
+  {id:'bmw', name:'بی‌ام‌و M550i', unit:'AED', current:0, target:180000, deadline:'2027-01-17', color:'#e8c65a', history:[]},
 ];
 
-function loadGoals(){
+function loadLocal(){
   try{
     const raw = localStorage.getItem(STORE_KEY);
-    goals = raw ? JSON.parse(raw) : defaultGoals;
-  }catch(e){
-    goals = defaultGoals;
-  }
-  render();
-}
-
-function saveGoals(){
+    const parsed = raw ? JSON.parse(raw) : null;
+    goals = (parsed && parsed.goals) || defaultGoals;
+    history = (parsed && parsed.history) || [];
+  }catch(e){ goals = defaultGoals; history = []; }
   try{
-    localStorage.setItem(STORE_KEY, JSON.stringify(goals));
-  }catch(e){
-    console.error('storage failed', e);
-  }
+    const c = localStorage.getItem(CFG_KEY);
+    if(c) cfg = JSON.parse(c);
+  }catch(e){}
+}
+function saveLocal(){
+  localStorage.setItem(STORE_KEY, JSON.stringify({goals, history, updatedAt: new Date().toISOString()}));
+}
+function saveCfg(){ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }
+
+function toast(msg){
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg;
+  wrap.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(), 300); }, 2600);
 }
 
-function pct(g){
-  if(!g.target || g.target<=0) return 0;
-  return Math.max(0, Math.min(100, (g.current/g.target)*100));
+function pct(g){ if(!g.target || g.target<=0) return 0; return Math.max(0, Math.min(100, (g.current/g.target)*100)); }
+function overallPct(){ return goals.length ? goals.reduce((s,g)=>s+pct(g),0)/goals.length : 0; }
+function relTime(iso){
+  if(!iso) return 'هنوز به‌روزرسانی نشده';
+  const diff = Date.now() - new Date(iso).getTime();
+  const days = Math.floor(diff/86400000);
+  if(days<=0) return 'امروز به‌روز شد';
+  if(days===1) return 'دیروز به‌روز شد';
+  return days + ' روز پیش به‌روز شد';
+}
+
+function recordSnapshot(){
+  const today = new Date().toISOString().slice(0,10);
+  const val = overallPct();
+  const last = history[history.length-1];
+  if(last && last.ts.slice(0,10)===today){ last.avgPct = val; }
+  else { history.push({ts:new Date().toISOString(), avgPct: val}); }
+  if(history.length>120) history = history.slice(-120);
 }
 
 function gaugeSVG(p, color){
-  const r = 42, c = 2*Math.PI*r;
+  const r = 40, c = 2*Math.PI*r;
   const offset = c - (p/100)*c;
-  return `
-  <svg class="gauge" viewBox="0 0 100 100">
-    <circle cx="50" cy="50" r="${r}" fill="none" stroke="#2c333d" stroke-width="8"/>
-    <circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="8"
-      stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"
-      transform="rotate(-90 50 50)" style="transition:stroke-dashoffset .6s ease"/>
-    <text x="50" y="55" text-anchor="middle" class="gauge-pct-text">${Math.round(p)}%</text>
-  </svg>`;
+  return '<svg class="gauge" viewBox="0 0 92 92">' +
+    '<circle cx="46" cy="46" r="'+r+'" fill="none" stroke="#2c333d" stroke-width="7"/>' +
+    '<circle cx="46" cy="46" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+offset+'" transform="rotate(-90 46 46)" style="transition:stroke-dashoffset .6s ease"/>' +
+    '<text x="46" y="51" text-anchor="middle" class="gauge-pct-text">'+Math.round(p)+'%</text></svg>';
 }
-
 function daysLeft(deadline){
   if(!deadline) return null;
-  const d = new Date(deadline);
-  const now = new Date();
-  return Math.ceil((d-now)/(1000*60*60*24));
+  return Math.ceil((new Date(deadline)-new Date())/86400000);
+}
+function fmt(n){ return Number(n).toLocaleString('en-US'); }
+
+function trendHTML(g){
+  const h = g.history||[];
+  if(h.length<2) return '';
+  const prev = h[h.length-2].value, curr = g.current;
+  if(curr===prev) return '';
+  const up = curr>prev;
+  return '<span class="trend '+(up?'up':'down')+'">'+(up?'▲':'▼')+' '+fmt(Math.abs(curr-prev))+'</span>';
 }
 
 function render(){
@@ -237,55 +341,89 @@ function render(){
   grid.innerHTML = '';
   empty.style.display = goals.length===0 ? 'block' : 'none';
 
-  let totalPct = 0;
-  goals.forEach((g, idx)=>{
+  goals.forEach(function(g, idx){
     const p = pct(g);
-    totalPct += p;
     const dl = daysLeft(g.deadline);
     const card = document.createElement('div');
     card.className = 'card';
+    card.style.animationDelay = (idx*0.05)+'s';
     card.style.setProperty('--accent', g.color);
-    card.innerHTML = `
-      <div class="card-top">
-        <div class="card-title">${g.name}</div>
-        <button class="del-btn" onclick="delGoal(${idx})">حذف ✕</button>
-      </div>
-      <div class="gauge-wrap">
-        ${gaugeSVG(p, g.color)}
-        <div class="gauge-info">
-          <div class="row"><span>فعلی</span><b>${fmt(g.current)}</b></div>
-          <div class="row"><span>هدف</span><b>${fmt(g.target)} ${g.unit}</b></div>
-          <div class="row"><span>باقی‌مانده</span><b>${fmt(Math.max(0,g.target-g.current))}</b></div>
-        </div>
-      </div>
-      ${g.deadline ? `<div class="deadline ${dl!==null && dl<30 ? 'late':''}">📅 سررسید: ${g.deadline} ${dl!==null ? (dl>=0 ? `(${dl} روز مانده)` : '(گذشته)') : ''}</div>` : ''}
-      <div class="edit-row">
-        <input type="number" inputmode="decimal" placeholder="به‌روزرسانی مقدار فعلی" id="upd-${idx}">
-        <button onclick="updateCurrent(${idx})">ثبت</button>
-      </div>
-    `;
+    card.innerHTML =
+      '<div class="card-top"><div class="card-title">'+g.name+' '+trendHTML(g)+'</div>' +
+      '<button class="del-btn" onclick="delGoal('+idx+')">حذف ✕</button></div>' +
+      '<div class="gauge-wrap">'+gaugeSVG(p, g.color)+
+      '<div class="gauge-info">' +
+        '<div class="row"><span>فعلی</span><b>'+fmt(g.current)+'</b></div>' +
+        '<div class="row"><span>هدف</span><b>'+fmt(g.target)+' '+g.unit+'</b></div>' +
+        '<div class="row"><span>باقی‌مانده</span><b>'+fmt(Math.max(0,g.target-g.current))+'</b></div>' +
+      '</div></div>' +
+      '<div class="updated-at">'+relTime(g.updatedAt)+'</div>' +
+      (g.deadline ? '<div class="deadline '+(dl!==null && dl<30?'late':'')+'">📅 '+g.deadline+' '+(dl!==null ? (dl>=0?'('+dl+' روز مانده)':'(گذشته)') : '')+'</div>' : '') +
+      '<div class="edit-row"><input type="number" inputmode="decimal" placeholder="مقدار جدید" id="upd-'+idx+'"><button onclick="updateCurrent('+idx+')">ثبت</button></div>';
     grid.appendChild(card);
   });
 
-  document.getElementById('overallPct').textContent =
-    goals.length ? Math.round(totalPct/goals.length) + '%' : '—';
+  document.getElementById('overallPct').textContent = goals.length ? Math.round(overallPct()) + '%' : '—';
+  renderChart();
+  renderSyncStatus();
 }
 
-function fmt(n){ return Number(n).toLocaleString('en-US'); }
+function renderChart(){
+  const wrap = document.getElementById('chartWrap');
+  if(history.length<2){ wrap.innerHTML = '<div style="font-size:11px;color:var(--text-muted);padding-top:18px;">با چند بار به‌روزرسانی، نمودار روند اینجا شکل می‌گیره</div>'; return; }
+  const w = wrap.clientWidth || 600, h = 64, pad=4;
+  const pts = history.slice(-30);
+  const stepX = (w-pad*2)/(pts.length-1);
+  const path = pts.map(function(pnt,i){
+    const x = pad + i*stepX;
+    const y = h - pad - (pnt.avgPct/100)*(h-pad*2);
+    return (i===0?'M':'L')+x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ');
+  const areaPath = path + ' L'+(pad+(pts.length-1)*stepX).toFixed(1)+','+h+' L'+pad+','+h+' Z';
+  wrap.innerHTML =
+    '<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" preserveAspectRatio="none">' +
+    '<defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#c9a227" stop-opacity="0.35"/>' +
+    '<stop offset="100%" stop-color="#c9a227" stop-opacity="0"/></linearGradient></defs>' +
+    '<path d="'+areaPath+'" fill="url(#areaGrad)"/>' +
+    '<path d="'+path+'" fill="none" stroke="#e8c65a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+    '</svg>';
+}
+
+function renderSyncStatus(){
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  if(cfg.token && cfg.gistId){
+    dot.classList.add('on');
+    txt.textContent = cfg.lastSync ? ('همگام: '+relTime(cfg.lastSync)) : 'متصل، هنوز سینک نشده';
+  } else {
+    dot.classList.remove('on');
+    txt.textContent = 'همگام‌سازی غیرفعال';
+  }
+}
 
 function updateCurrent(idx){
   const input = document.getElementById('upd-'+idx);
   const val = parseFloat(input.value);
   if(isNaN(val)) return;
-  goals[idx].current = val;
-  saveGoals();
-  render();
+  const g = goals[idx];
+  g.current = val;
+  g.updatedAt = new Date().toISOString();
+  g.history = g.history || [];
+  const today = new Date().toISOString().slice(0,10);
+  const last = g.history[g.history.length-1];
+  if(last && last.ts.slice(0,10)===today){ last.value = val; }
+  else { g.history.push({ts:g.updatedAt, value: val}); }
+  if(g.history.length>60) g.history = g.history.slice(-60);
+  recordSnapshot();
+  saveLocal(); render();
+  pushToGist();
 }
 
 function delGoal(idx){
   goals.splice(idx,1);
-  saveGoals();
-  render();
+  saveLocal(); render();
+  pushToGist();
 }
 
 function addGoal(){
@@ -295,43 +433,138 @@ function addGoal(){
   const target = parseFloat(document.getElementById('f-target').value) || 0;
   const deadline = document.getElementById('f-deadline').value;
   const color = document.getElementById('f-color').value;
-  if(!name || !target){ alert('لطفاً عنوان و مقدار هدف را وارد کن'); return; }
-  goals.push({id:Date.now().toString(), name, unit, current, target, deadline, color});
-  saveGoals();
-  render();
-  document.getElementById('f-name').value='';
-  document.getElementById('f-unit').value='';
-  document.getElementById('f-current').value='';
-  document.getElementById('f-target').value='';
-  document.getElementById('f-deadline').value='';
+  const err = document.getElementById('addErr');
+  if(!name || !target){ err.style.display='block'; return; }
+  err.style.display='none';
+  goals.push({id:Date.now().toString(), name:name, unit:unit, current:current, target:target, deadline:deadline, color:color, updatedAt:new Date().toISOString(), history:[{ts:new Date().toISOString(), value:current}]});
+  recordSnapshot();
+  saveLocal(); render();
+  pushToGist();
+  ['f-name','f-unit','f-current','f-target','f-deadline'].forEach(function(id){ document.getElementById(id).value=''; });
 }
 
-loadGoals();
+loadLocal();
+if(history.length===0 && goals.some(function(g){return g.current>0;})) recordSnapshot();
+render();
 
-// --- PWA install prompt ---
+const FILE_NAME = 'goals-data.json';
+function ghHeaders(){ return {'Authorization':'token '+cfg.token, 'Accept':'application/vnd.github+json'}; }
+
+function createGist(){
+  const payload = {goals:goals, history:history, updatedAt:new Date().toISOString()};
+  const files = {}; files[FILE_NAME] = {content: JSON.stringify(payload)};
+  return fetch('https://api.github.com/gists', {
+    method:'POST', headers: ghHeaders(),
+    body: JSON.stringify({description:'goals-dashboard-data', public:false, files:files})
+  }).then(function(res){
+    if(!res.ok) throw new Error('create failed: '+res.status);
+    return res.json();
+  }).then(function(data){ return data.id; });
+}
+
+function pushToGist(){
+  if(!cfg.token || !cfg.gistId) return Promise.resolve();
+  const payload = {goals:goals, history:history, updatedAt:new Date().toISOString()};
+  const files = {}; files[FILE_NAME] = {content: JSON.stringify(payload)};
+  return fetch('https://api.github.com/gists/'+cfg.gistId, {
+    method:'PATCH', headers: ghHeaders(),
+    body: JSON.stringify({files:files})
+  }).then(function(res){
+    if(!res.ok) throw new Error(String(res.status));
+    cfg.lastSync = new Date().toISOString();
+    saveCfg(); renderSyncStatus();
+  }).catch(function(e){ toast('همگام‌سازی ناموفق بود — بعداً دوباره امتحان می‌کنیم'); });
+}
+
+function pullFromGist(showToast){
+  if(!cfg.token || !cfg.gistId) return;
+  const btn = document.getElementById('syncBtn');
+  btn.classList.add('spinning');
+  fetch('https://api.github.com/gists/'+cfg.gistId, {headers: ghHeaders()})
+    .then(function(res){
+      if(!res.ok) throw new Error(String(res.status));
+      return res.json();
+    })
+    .then(function(data){
+      const content = data.files && data.files[FILE_NAME] && data.files[FILE_NAME].content;
+      if(content){
+        const remote = JSON.parse(content);
+        const localRaw = localStorage.getItem(STORE_KEY);
+        const local = localRaw ? JSON.parse(localRaw) : null;
+        if(!local || !local.updatedAt || new Date(remote.updatedAt) > new Date(local.updatedAt)){
+          goals = remote.goals || goals;
+          history = remote.history || history;
+          saveLocal(); render();
+          if(showToast) toast('داده‌ها از حساب گیت‌هابت به‌روز شد');
+        } else {
+          pushToGist().then(function(){ if(showToast) toast('همگام‌سازی انجام شد'); });
+        }
+      }
+      cfg.lastSync = new Date().toISOString();
+      saveCfg(); renderSyncStatus();
+    })
+    .catch(function(e){ if(showToast) toast('اتصال برقرار نشد — توکن یا Gist ID رو چک کن'); })
+    .finally(function(){ btn.classList.remove('spinning'); });
+}
+
+document.getElementById('syncBtn').addEventListener('click', function(){ pullFromGist(true); });
+
+const modalBg = document.getElementById('modalBg');
+document.getElementById('settingsBtn').addEventListener('click', function(){
+  document.getElementById('cfgToken').value = cfg.token || '';
+  document.getElementById('cfgGistId').value = cfg.gistId || '';
+  modalBg.classList.add('open');
+});
+document.getElementById('modalClose').addEventListener('click', function(){ modalBg.classList.remove('open'); });
+modalBg.addEventListener('click', function(e){ if(e.target===modalBg) modalBg.classList.remove('open'); });
+
+document.getElementById('connectBtn').addEventListener('click', function(){
+  const token = document.getElementById('cfgToken').value.trim();
+  let gistId = document.getElementById('cfgGistId').value.trim();
+  if(!token){ toast('توکن رو وارد کن'); return; }
+  cfg.token = token;
+  const proceed = function(id){
+    cfg.gistId = id;
+    saveCfg();
+    modalBg.classList.remove('open');
+    toast('متصل شد ✓');
+    pullFromGist(false);
+    renderSyncStatus();
+  };
+  if(!gistId){
+    toast('در حال ساخت Gist جدید...');
+    createGist().then(proceed).catch(function(){ toast('اتصال ناموفق بود — توکن رو بررسی کن (باید دسترسی gist داشته باشه)'); });
+  } else {
+    proceed(gistId);
+  }
+});
+document.getElementById('disconnectBtn').addEventListener('click', function(){
+  cfg = {token:'', gistId:''};
+  saveCfg(); renderSyncStatus(); modalBg.classList.remove('open');
+  toast('همگام‌سازی قطع شد');
+});
+
+if(cfg.token && cfg.gistId){ pullFromGist(false); }
+
 let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e)=>{
-  e.preventDefault();
-  deferredPrompt = e;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault(); deferredPrompt = e;
   document.getElementById('installBanner').style.display = 'flex';
 });
-document.getElementById('installBtn').addEventListener('click', async ()=>{
+document.getElementById('installBtn').addEventListener('click', function(){
   if(!deferredPrompt) return;
   deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
+  deferredPrompt.userChoice.then(function(){ deferredPrompt=null; });
   document.getElementById('installBanner').style.display = 'none';
 });
-window.addEventListener('appinstalled', ()=>{
-  document.getElementById('installBanner').style.display = 'none';
-});
+window.addEventListener('appinstalled', function(){ document.getElementById('installBanner').style.display='none'; });
 
-// --- Service worker registration ---
 if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').catch(err=>console.error('SW failed', err));
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(err){ console.error('SW failed', err); });
   });
 }
+window.addEventListener('resize', renderChart);
 </script>
 </body>
 </html>
